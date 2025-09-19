@@ -1,0 +1,122 @@
+@use "../partials/variables" as *;
+
+/* Dashboard */
+.dashboard-view {
+	
+		.view-content {
+			gap: 0;
+
+				.view-hero {
+					margin-bottom: pxVw(100);
+				}
+
+		}
+		
+		.view-trivia {
+
+				.trivia-header {
+					position: relative;
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					padding: pxVw(24) 0;
+					margin: pxVw(16) 0;
+
+						hr {
+							position: absolute;
+							top: 50%;
+							left: 0;
+							right: 0;
+							border: pxVw(2) solid $black;
+							width: 100%;
+							margin: 0;
+							z-index: -1;
+						}
+						
+						p {
+							display: inline-block;
+							padding: 0 pxVw(24);
+							background: $white;
+							font-weight: 600;
+							line-height: 1;
+						}
+						
+				}
+
+		}
+		
+		.card.dashboard-card {
+			gap: pxVw(36);
+
+				.image-container {
+					flex: 0 0 pxVw(160);
+					width: pxVw(160);
+					aspect-ratio: 1 / 1;
+				}
+
+				.row-icon {
+					display: grid;
+					grid-template-columns: 1fr;
+
+						svg {
+							grid-area: 1 / 1;
+						}
+
+						.check {
+							opacity: 0;
+						}
+
+						.arrow {
+							opacity: 1;
+						}
+
+				}
+
+				&:hover, &:active {
+
+						.row-icon svg {
+							transform: scale(1.19);
+						}
+
+				}
+
+				&.visited {
+					background: $light-gray;
+					box-shadow: $shadow-hover;
+
+						.row-icon {
+
+							.check {
+								opacity: 1;
+							}
+
+							.arrow {
+								opacity: 0;
+							}
+						}
+
+						[class*="icon"] {
+							color: $red;
+						}
+
+				}
+
+		}
+		
+		&#business-dashboard {
+
+				.trivia-card .card__wrap {
+					aspect-ratio: 1 / 1;
+				}
+
+		}
+
+		&#technical-dashboard {
+
+				.trivia-card .card__wrap {
+					aspect-ratio: 283 / 240;
+				}
+
+		}
+	
+}

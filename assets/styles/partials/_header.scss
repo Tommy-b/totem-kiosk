@@ -1,0 +1,46 @@
+@use "icons" as *;
+@use "variables" as *;
+
+.header {
+	background: $white;
+	border-bottom: 1px solid $dark-gray;
+	padding: 4.63vw;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	flex-shrink: 0;
+}
+
+.logo {
+	width: 26.852vw;
+	
+		svg {
+			width: 100%;
+			height: auto;
+		}
+	
+}
+
+.nav {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 50px;
+	display: flex;
+	gap: 15px;
+}
+
+.nav-btn {
+	background: #f8f9fa;
+	color: #333;
+	border: 2px solid #dee2e6;
+	border-radius: 25px;
+	padding: 12px;
+	font-size: 1rem;
+	font-weight: 500;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	min-height: 50px;
+}

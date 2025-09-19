@@ -1,0 +1,31 @@
+/* Variables */
+
+// Functions
+@function pxVw($px) {
+	@return calc($px / 1080 * 100vw);
+}
+
+// Colors
+$black: #000000;
+$black-svg: '000000';
+$white: #ffffff;
+$white-svg: 'ffffff';
+$red: #FE414D;
+$red-svg: 'FE414D';
+$light-gray: #EEEEEE;
+$dark-gray: #B4B4B4;
+
+// Transitions
+$trans1: 0.2s;
+$trans2: 0.3s;
+$trans3: 0.4s;
+$trans4: 0.5s;
+$trans5: 0.6s;
+
+// Other
+$border-radius: pxVw(24);
+$stroke-width: pxVw(2);
+$stroke-color: $light-gray;
+$stroke-hover-color: $black;
+$shadow: pxVw(0) pxVw(16) pxVw(32) calc(pxVw(8) * -1) rgba(12, 12, 13, 0.20);
+$shadow-hover: pxVw(0) pxVw(0) pxVw(0) pxVw(0) rgba(12, 12, 13, 0);

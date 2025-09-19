@@ -1,0 +1,102 @@
+@use "variables" as *;
+
+/* Modals */
+.modal-overlay {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba(0, 0, 0, 0.8);
+	backdrop-filter: blur(20px);
+	z-index: -1000;
+	opacity: 0;
+	visibility: hidden;
+	
+		.modal-container {
+			width: 81.5%;
+			aspect-ratio: 880 / 978;
+			background: $white;
+			border-radius: $border-radius;
+			overflow: hidden;
+			position: relative;
+			display: flex;
+			flex-direction: column;
+			justify-content: space-between;
+			
+				.swiper {
+					width: 100%;
+				}
+			
+				.media {
+					width: 100%;
+					aspect-ratio: 16 / 9;
+					
+						video {
+							width: 100%;
+							height: 100%;
+							object-fit: cover;
+							margin-top: calc(pxVw(1) * -1);
+						}
+					
+				}
+				
+				.content {
+					width: 100%;
+					padding: pxVw(50);
+					
+						.h3 {
+							margin-bottom: pxVw(16);
+						}
+						
+						.p-lg {
+							margin-bottom: 0;
+						}
+					
+				}
+				
+		}
+		
+		.modal-nav {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: pxVw(24);
+			width: 100%;
+			padding: 0 pxVw(50) pxVw(50);
+			
+				.swiper-button-next, .swiper-button-prev {
+					position: relative;
+					color: $black;
+					width: pxVw(72);
+					height: unset;
+					aspect-ratio: 1 / 1;
+				}
+				
+				.swiper-pagination {
+					position: relative;
+					display: flex;
+					flex: 0 0 max-content;
+					align-items: center;
+					justify-content: center;
+					line-height: 1.5;
+					font-weight: 400;
+					font-size: 2.222vw;
+					top: unset;
+					left: unset;
+					right: unset;
+					bottom: unset;
+				}
+			
+		}
+		
+		.modal-close {
+			display: inline-flex;
+			margin-top: pxVw(100);
+		}
+	
+}

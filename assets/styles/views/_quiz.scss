@@ -1,0 +1,33 @@
+/* Quiz */
+.quiz-question {
+	margin-bottom: 30px;
+	text-align: left;
+}
+
+.quiz-options {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+	gap: 15px;
+	margin-top: 20px;
+}
+
+.quiz-option {
+	background: #f8f9fa;
+	border: 2px solid #eee;
+	border-radius: 10px;
+	padding: 20px;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	text-align: center;
+}
+
+.quiz-option:hover {
+	border-color: #fe414d;
+	background: #fff5f5;
+}
+
+.quiz-option.selected {
+	border-color: #fe414d;
+	background: #fe414d;
+	color: white;
+}

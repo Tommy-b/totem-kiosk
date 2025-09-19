@@ -1,0 +1,33 @@
+/* Icons - Optimized for Performance */
+@use "variables" as *;
+
+/* **************************************************
+ Use the following syntax to add an icon:
+ <svg class="icon icon--left" aria-hidden="true">
+		<use href="#icon-arrow"></use>
+	</svg>
+****************************************************/
+
+.icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: pxVw(36);
+	aspect-ratio: 1 / 1;
+	transition: all $trans3 ease;
+	
+	svg {
+		width: 100%;
+		height: 100%;
+		fill: currentColor;
+	}
+}
+.icon--sm { width: pxVw(24); }
+.icon--md { width: pxVw(32); }
+.icon--lg { width: pxVw(48); }
+.icon--xl { width: pxVw(72); }
+
+.icon--left { transform: rotate(180deg); }
+.icon--right { transform: rotate(0deg); }
+.icon--up { transform: rotate(-90deg); }
+.icon--down { transform: rotate(90deg); }

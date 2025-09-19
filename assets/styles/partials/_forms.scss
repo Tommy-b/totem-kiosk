@@ -1,0 +1,52 @@
+@use "variables" as *;
+
+/* Forms */
+.form-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: $white;
+	padding: pxVw(313) pxVw(100) pxVw(100);
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-start;
+	gap: pxVw(100);
+	z-index: -1000;
+	opacity: 0;
+	visibility: hidden;
+}
+
+.form-container {
+	width: 100%;
+}
+
+.form-group {
+	margin-bottom: 25px;
+	text-align: left;
+}
+
+.form-group label {
+	display: block;
+	margin-bottom: 8px;
+	font-weight: 600;
+	color: #333;
+}
+
+.form-group input,
+.form-group select {
+	width: 100%;
+	padding: 15px;
+	border: 2px solid #eee;
+	border-radius: 10px;
+	font-size: 1.1rem;
+	transition: border-color 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+	outline: none;
+	border-color: #fe414d;
+}

@@ -1,0 +1,18 @@
+@use "variables" as *;
+
+.footer {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: $white;
+	border-top: 1px solid $dark-gray;
+	padding: 3.704vw;
+	text-align: center;
+	flex-shrink: 0;
+	
+		img {
+			width: 17.037vw;
+			height: auto;
+		}
+	
+}

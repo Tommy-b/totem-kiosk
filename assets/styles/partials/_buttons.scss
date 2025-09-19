@@ -1,0 +1,77 @@
+/* Buttons - Touch optimized */
+@use "variables" as *;
+
+button {
+	appearance: none;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	border: none;
+	outline: none;
+	cursor: pointer;
+}
+
+.btn {
+	background: $black;
+	color: $white;
+	border: none;
+	border-radius: pxVw(99);
+	padding: pxVw(27) pxVw(28);
+	font-size: pxVw(24);
+	font-weight: 600;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: pxVw(12);
+	text-decoration: none;
+	line-height: 1.1;
+	transition: all $trans3 ease;
+	
+		&.btn-red {
+			background: $red;
+		}
+		
+		&.btn-outline, &.btn-white {
+			background: transparent;
+			color: $black;
+			border: 2px solid $black;
+			padding: pxVw(18) pxVw(28);
+			line-height: pxVw(36);
+			
+				&:hover, &:active {
+					background: $black;
+					color: $white;
+				}
+			
+		}
+		
+		&.btn-white {
+			background: $white;
+		}
+		
+		&.btn-plain {
+			background: transparent;
+			color: $black;
+			border: none;
+			padding: pxVw(18) pxVw(0);
+
+				&:hover, &:active {
+					color: $red;
+				}
+
+		}
+		
+		svg {
+			transition: all $trans3 ease;
+				* {
+					transition: all $trans3 ease;
+				}
+		}
+	
+}
+
+.btn:hover,
+.btn:active {
+	transform: scale(0.98);
+}

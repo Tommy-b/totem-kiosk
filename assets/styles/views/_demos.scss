@@ -1,0 +1,42 @@
+@use "../partials/variables" as *;
+
+/* Demos */	
+.demo-view {
+	
+	
+		.demo-grid {
+			
+			
+				.demo-card {
+					
+						.image-container {
+							position: relative;
+							flex: 0 0 pxVw(248);
+							width: pxVw(248);
+							aspect-ratio: 16 / 9;
+							
+								&::after {
+									content: '';
+									position: absolute;
+									top: 50%;
+									left: 50%;
+									transform: translate(-50%, -50%);
+									width: 36px;
+									height: 36px;
+									z-index: 2;
+									background: url('../images/play-button.svg') no-repeat center center;
+									background-size: contain;
+								}
+							
+						}
+						
+						.row-content {
+							flex: 1;
+							padding: 0 pxVw(36);
+						}
+					
+				}
+			
+		}
+	
+}

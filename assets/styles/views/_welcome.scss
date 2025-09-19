@@ -1,0 +1,47 @@
+@use "../partials/variables" as *;
+/* Welcome screen */
+.welcome-view {
+
+	video {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		width: 100%;
+		aspect-ratio: 1080 / 1920;
+		transform: translate(-50%, -50%);
+	}
+	.welcome-content {
+		position: relative;
+		z-index: 1;
+
+			h1 {
+				color: $white;
+				margin-bottom: pxVw(36);
+			}
+
+			p.h3 {
+				margin-bottom: pxVw(278);
+				color: $black;
+				font-weight: 400;
+				line-height: 1.31;
+				padding: 0 pxVw(45);
+			}
+
+			.cta {
+
+					span.h3 {
+						margin-bottom: pxVw(24);
+						display: block;
+					}
+
+					img {
+						width: pxVw(150);
+						height: auto;
+						margin: auto;
+					}
+
+			}
+
+	}
+	
+}

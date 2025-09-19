@@ -1,0 +1,39 @@
+/* Timeout overlay */
+.timeout-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba(0, 0, 0, 0.8);
+	display: none;
+	align-items: center;
+	justify-content: center;
+	z-index: 1000;
+}
+
+.timeout-overlay.active {
+	display: flex;
+}
+
+.timeout-card {
+	background: white;
+	border-radius: 20px;
+	padding: 40px;
+	text-align: center;
+	max-width: 400px;
+}
+
+.timer-circle {
+	width: 120px;
+	height: 120px;
+	border: 8px solid #eee;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin: 20px auto;
+	font-size: 2rem;
+	font-weight: bold;
+	color: #fe414d;
+}

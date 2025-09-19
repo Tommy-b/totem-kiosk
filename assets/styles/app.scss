@@ -1,0 +1,19 @@
+@forward "partials/variables";
+@forward "partials/icons";
+
+@use "partials/reset";
+@use "partials/typography";
+@use "partials/buttons";
+@use "partials/forms";
+@use "partials/animations";
+@use "partials/header";
+@use "partials/footer";
+@use "partials/global";
+@use "partials/modals";
+
+@use "views/welcome";
+@use "views/path-selection";
+@use "views/dashboard";
+@use "views/demos";
+@use "views/quiz";
+@use "views/timeout";

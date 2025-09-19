@@ -1,0 +1,263 @@
+@use "variables" as *;
+
+body {
+	font-family: 'Futura Next', Roboto, sans-serif;
+	background: #fff;
+	color: #000;
+	overflow: hidden;
+	touch-action: manipulation;
+	user-select: none;
+	-webkit-user-select: none;
+}
+
+.kiosk-container {
+	display: flex;
+	flex-direction: column;
+	height: 100dvh;
+	width: 100dvw;
+}
+
+.main-content {
+	flex: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
+}
+
+/* Views */
+.view {
+	position: relative;
+	display: none;
+	width: 100%;
+	height: 100%;
+	padding: pxVw(0) pxVw(100);
+	text-align: center;
+	
+		&.active {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			animation: fadeIn 0.5s ease;
+		}
+		
+		.view-hero {
+			
+				h2 {
+					margin-bottom: pxVw(18);
+				}
+				
+				p {
+					padding: 0 pxVw(80);
+				}
+			
+		}
+		
+		.view-content {
+			height: calc(100% - pxVw(204));
+			padding-top: pxVw(109);
+			display: flex;
+			flex-direction: column;
+			justify-content: flex-start;
+			gap: pxVw(100);
+		}
+		
+		.view-footer {
+			width: 100%;
+			height: pxVw(204);
+			display: flex;
+			align-items: center;
+			
+				&.left {
+					justify-content: flex-start;
+				}
+				
+				&.three-btn {
+					justify-content: space-between;
+					
+						>div {
+							
+							&:first-of-type {
+								display: flex;
+								align-items: center;
+								justify-content: flex-start;
+								gap: pxVw(36);
+							}
+							
+						}
+					
+				}
+			
+		}
+	
+}
+
+/* Cards */
+.card-grid {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: pxVw(16);
+	width: 100%;
+}
+
+.trivia-grid {
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
+	gap: pxVw(16);
+	width: 100%;
+}
+
+ul.card-grid {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.card {
+	display: flex;
+	flex-direction: column;
+	position: relative;
+	background: white;
+	border: $stroke-width solid $stroke-color;
+	border-radius: $border-radius;
+	cursor: pointer;
+	overflow: hidden;
+	transition: all 0.3s ease;
+	
+		&.row-card {
+			flex-direction: row;
+			align-items: center;
+			justify-content: flex-start;
+			text-align: left;
+			
+				.image-container {
+					overflow: hidden;
+					position: relative;
+					
+						img {
+							width: 100%;
+							height: 100%;
+							object-fit: cover;
+							object-position: left center;
+						}
+					
+				}
+				
+				.row-content {
+					flex: 1;
+				}
+				
+				.row-icon {
+					flex: 0 0 pxVw(140);
+					width: pxVw(140);
+					display: flex;
+					align-items: center;
+					justify-content: flex-start;
+					padding-left: pxVw(17);
+				}
+			
+		}
+	
+		&.has-shadow {
+			box-shadow: $shadow;
+			
+				&:hover, &:active {
+					border-color: $stroke-hover-color;
+					box-shadow: $shadow-hover;
+				}
+			
+		}
+		
+		&.dark-border {
+			border-color: $black !important;
+		}
+		
+		&.dark-card {
+			background: $black;
+			color: $white;
+			padding: pxVw(32);
+			border-radius: pxVw(16);
+			border: none;
+		}
+		
+		&.trivia-card {
+			background: none;
+			color: inherit;
+			border: none;
+			overflow: visible;
+			
+				.card__wrap {
+					position: relative;
+					perspective: 600px;
+					transform-style: preserve-3d;
+					transform-origin: center center;
+					transition: transform 1s;
+					
+					
+						&.is-flipped {
+							transform: rotateY(-180deg);
+						}
+					
+				}
+			
+				.card__face {
+					position: absolute;
+					top: 0;
+					left: 0;
+					width: 100%;
+					height: 100%;
+					padding: pxVw(20) pxVw(16) pxVw(20) pxVw(20);
+					border: pxVw(2) solid transparent;
+					text-align: left;
+					backface-visibility: hidden;
+					border-radius: pxVw(16);
+					overflow: hidden;
+					
+						p {
+							text-wrap: unset;
+						}
+					
+				}
+				
+				.card__face--front {
+					background: $black;
+					color: $white;
+					transform: rotateY(0deg);
+					
+						.icon {
+							position: absolute;
+							bottom: pxVw(8);
+							right: pxVw(8);
+							color: $red;
+						}
+					
+				}
+				
+				.card__face--back {
+					background: $white;
+					color: $black;
+					border-color: $black;
+					transform: rotateY(180deg);
+					
+						use[href*="-x"] {
+							color: $red;
+						}
+						
+						p.h4 {
+							display: flex;
+							align-items: center;
+							justify-content: flex-start;
+							gap: pxVw(12);
+							margin-bottom: pxVw(16);
+						}
+					
+				}
+			
+		}
+		
+		&.plain-card {
+			border: none;
+		}
+			
+}
