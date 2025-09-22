@@ -75,3 +75,8 @@ button {
 .btn:active {
 	transform: scale(0.98);
 }
+
+/* Fix for persistent :active state on touch devices */
+.btn:not(:focus):not(:hover):not(:active) {
+	transform: scale(1);
+}

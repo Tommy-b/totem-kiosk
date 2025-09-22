@@ -13,7 +13,7 @@
 	flex-direction: column;
 	align-items: center;
 	justify-content: flex-start;
-	gap: pxVw(100);
+	text-align: center;
 	z-index: -1000;
 	opacity: 0;
 	visibility: hidden;
@@ -21,32 +21,120 @@
 
 .form-container {
 	width: 100%;
+	position: relative;
+	z-index: 1;
+	
+		.h2 {
+			margin-bottom: pxVw(86);
+		}
+	
 }
 
 .form-group {
-	margin-bottom: 25px;
+	margin-bottom: pxVw(16);
 	text-align: left;
-}
-
-.form-group label {
-	display: block;
-	margin-bottom: 8px;
-	font-weight: 600;
-	color: #333;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	
+		&.name-group {
+			flex-direction: row;
+			gap: pxVw(16);
+		}
+	
+		>div {
+			flex-grow: 1;
+		}
+	
 }
 
 .form-group input,
 .form-group select {
 	width: 100%;
-	padding: 15px;
-	border: 2px solid #eee;
-	border-radius: 10px;
-	font-size: 1.1rem;
-	transition: border-color 0.3s ease;
+	padding: pxVw(26) pxVw(40);
+	background: $light-gray;
+	border: pxVw(2) solid $light-gray;
+	border-radius: pxVw(99);
+	font-size: pxVw(24);
+	transition: all 0.3s ease;
+}
+
+.group-select {
+	position: relative;
+		
+		&::after {
+			content: '';
+			position: absolute;
+			top: 50%;
+			right: pxVw(40);
+			transform: translateY(-50%);
+			width: pxVw(24);
+			height: pxVw(24);
+			background: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgdmlld0JveD0iMCAwIDMyIDMyIiBmaWxsPSJub25lIj4KICA8cGF0aCBkPSJNMjcuMDYxMiAxMy4wNjE1TDE3LjA2MTIgMjMuMDYxNUMxNi45MjE4IDIzLjIwMTMgMTYuNzU2MyAyMy4zMTIzIDE2LjU3MzkgMjMuMzg4QzE2LjM5MTYgMjMuNDYzNyAxNi4xOTYxIDIzLjUwMjcgMTUuOTk4NyAyMy41MDI3QzE1LjgwMTMgMjMuNTAyNyAxNS42MDU4IDIzLjQ2MzcgMTUuNDIzNSAyMy4zODhDMTUuMjQxMSAyMy4zMTIzIDE1LjA3NTYgMjMuMjAxMyAxNC45MzYyIDIzLjA2MTVMNC45MzYyIDEzLjA2MTVDNC42NTQ0IDEyLjc3OTcgNC40OTYwOSAxMi4zOTc1IDQuNDk2MDkgMTEuOTk5QzQuNDk2MDkgMTEuNjAwNSA0LjY1NDQgMTEuMjE4MyA0LjkzNjIgMTAuOTM2NUM1LjIxNzk5IDEwLjY1NDcgNS42MDAxOCAxMC40OTY0IDUuOTk4NyAxMC40OTY0QzYuMzk3MjEgMTAuNDk2NCA2Ljc3OTQgMTAuNjU0NyA3LjA2MTIgMTAuOTM2NUwxNS45OTk5IDE5Ljg3NTJMMjQuOTM4NyAxMC45MzUyQzI1LjIyMDUgMTAuNjUzNCAyNS42MDI3IDEwLjQ5NTEgMjYuMDAxMiAxMC40OTUxQzI2LjM5OTcgMTAuNDk1MSAyNi43ODE5IDEwLjY1MzQgMjcuMDYzNyAxMC45MzUyQzI3LjM0NTUgMTEuMjE3IDI3LjUwMzggMTEuNTk5MiAyNy41MDM4IDExLjk5NzdDMjcuNTAzOCAxMi4zOTYyIDI3LjM0NTUgMTIuNzc4NCAyNy4wNjM3IDEzLjA2MDJMMjcuMDYxMiAxMy4wNjE1WiIgZmlsbD0iYmxhY2siLz4KPC9zdmc+") no-repeat center center;
+			background-size: contain;
+		}
+	
+		select {
+			-webkit-appearance: none;
+			-moz-appearance: none;
+			appearance: none;
+		}
+	
 }
 
 .form-group input:focus,
 .form-group select:focus {
 	outline: none;
-	border-color: #fe414d;
+	border-color: $black;
+	background: $white;
+}
+
+/* Form Validation Styles */
+.form-group input.error,
+.form-group select.error {
+	border-color: #dc3545;
+	background: #fff5f5;
+}
+
+.form-group input.error:focus,
+.form-group select.error:focus {
+	border-color: #dc3545;
+	background: #fff5f5;
+}
+
+.error-message {
+	color: #dc3545;
+	font-size: pxVw(20);
+	padding-left: pxVw(20);
+	display: block;
+}
+
+.form-submit {
+	
+		.btn {
+			width: 100%;
+		}
+	
+}
+
+.form-action-container {
+	
+		#formThanks {
+			position: relative;
+			opacity: 0;
+			text-align: center;
+			width: pxVw(524);
+			margin: -17vw auto 0;
+			pointer-events: none;
+			z-index: 0;
+		}
+		
+		p.h1 {
+			margin-bottom: pxVw(24);
+		}
+	
+		.modal-close {
+			margin-top: pxVw(100);
+		}
+	
 }

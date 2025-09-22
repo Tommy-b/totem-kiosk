@@ -1,3 +1,5 @@
+@use "../partials/variables" as *;
+
 /* Timeout overlay */
 .timeout-overlay {
 	position: fixed;
@@ -5,35 +7,83 @@
 	left: 0;
 	right: 0;
 	bottom: 0;
+	color: $white;
 	background: rgba(0, 0, 0, 0.8);
+	backdrop-filter: blur(20px);
 	display: none;
 	align-items: center;
 	justify-content: center;
 	z-index: 1000;
-}
+		
+		&.active {
+			display: flex;
+		}
+		
+		.timeout-card {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			gap: pxVw(40);
+			text-align: center;
+		}
+		
+		.timer-circle {
+			position: relative;
+			width: pxVw(480);
+			aspect-ratio: 1 / 1;
+			
+			svg {
+				width: 100%;
+				height: 100%;
+				transform: rotate(-90deg);
+				transform-origin: center;
+			}
+			
+			.board-ring {
+				stroke: #3a3939;
+				stroke-width: pxVw(20);
+				fill: none;
+			}
 
-.timeout-overlay.active {
-	display: flex;
-}
-
-.timeout-card {
-	background: white;
-	border-radius: 20px;
-	padding: 40px;
-	text-align: center;
-	max-width: 400px;
-}
-
-.timer-circle {
-	width: 120px;
-	height: 120px;
-	border: 8px solid #eee;
-	border-radius: 50%;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	margin: 20px auto;
-	font-size: 2rem;
-	font-weight: bold;
-	color: #fe414d;
+			.board-progress {
+				fill: none;
+				stroke: $red;
+				stroke-width: pxVw(20);
+				stroke-linecap: butt;
+			}
+			
+			.timer-circle-text {
+				display: flex;
+				align-items: center;
+				flex-direction: column;
+				gap: pxVw(16);
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);
+				font-size: pxVw(128);
+				font-weight: 600;
+				line-height: 1;
+				text-align: center;
+				
+				.number {
+					display: block;
+					font-size: pxVw(128);
+					font-weight: 600;
+					line-height: 1;
+				}
+				
+				.text {
+					font-size: pxVw(48);
+					line-height: 1.25;
+				}
+			}
+		}
+		
+		.timeout-resume {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+	
 }

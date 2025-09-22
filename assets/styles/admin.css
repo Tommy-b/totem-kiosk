@@ -1,0 +1,507 @@
+/* Variables */
+/* Reset and base styles */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    interpolate-size: allow-keywords;
+  }
+}
+body {
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  overflow-wrap: break-word;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  text-wrap: balance;
+}
+
+#root,
+#__next {
+  isolation: isolate;
+}
+
+/* Typography */
+@font-face {
+  font-family: "Futura Next";
+  src: url("../../assets/fonts/FuturaNextW05-Book.woff2") format("woff2"), url("../../assets/fonts/FuturaNextW05-Book.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Futura Next";
+  src: url("../../assets/fonts/FuturaNextW05-DemiBold.woff2") format("woff2"), url("../../assets/fonts/FuturaNextW05-DemiBold.woff") format("woff");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+h1, .h1,
+h2, .h2,
+h3, .h3,
+h4, .h4,
+h5, .h5,
+h6, .h6 {
+  font-weight: 600;
+}
+
+h1, .h1 {
+  font-size: 8.8888888889vw;
+  line-height: 1.15;
+}
+
+h2, .h2 {
+  font-size: 4.4444444444vw;
+  line-height: 1.33;
+}
+
+h3, .h3 {
+  font-size: 2.962962963vw;
+  line-height: 1.31;
+}
+
+h4, .h4 {
+  font-size: 1.8518518519vw;
+  line-height: 1.6;
+}
+
+h5, .h5 {
+  font-size: 1.4814814815vw;
+  line-height: 1.6;
+}
+
+h6, .h6 {
+  font-size: 1.4814814815vw;
+  line-height: 1.6;
+}
+
+p {
+  font-size: 1.8518518519vw;
+  font-weight: 400;
+  line-height: 1.6;
+}
+p.p-sm {
+  font-size: 1.4814814815vw;
+  line-height: 1.5;
+}
+p.p-lg {
+  font-size: 2.2222222222vw;
+  line-height: 1.5;
+}
+
+strong, b {
+  font-weight: 600;
+}
+
+em, i {
+  font-style: italic;
+}
+
+body {
+  font-family: "Futura Next", Roboto, sans-serif;
+  background: #fff;
+  color: #000;
+  overflow: hidden;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.kiosk-container {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  width: 100dvw;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* Views */
+.view {
+  position: relative;
+  display: none;
+  width: 100%;
+  height: 100%;
+  padding: 0vw 9.2592592593vw;
+  text-align: center;
+}
+.view * {
+  pointer-events: none;
+}
+.view.active {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.5s ease;
+}
+.view.active * {
+  pointer-events: auto;
+}
+.view .view-hero h2 {
+  margin-bottom: 1.6666666667vw;
+}
+.view .view-hero p {
+  padding: 0 7.4074074074vw;
+}
+.view .view-content {
+  width: 100%;
+  height: calc(100% - 18.8888888889vw);
+  padding-top: 10.0925925926vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 9.2592592593vw;
+}
+.view .view-footer {
+  width: 100%;
+  height: 18.8888888889vw;
+  display: flex;
+  align-items: center;
+}
+.view .view-footer.left {
+  justify-content: flex-start;
+}
+.view .view-footer.three-btn {
+  justify-content: space-between;
+}
+.view .view-footer.three-btn > div:first-of-type {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 3.3333333333vw;
+}
+
+/* Cards */
+.card-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.4814814815vw;
+  width: 100%;
+}
+
+.trivia-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1.4814814815vw;
+  width: 100%;
+}
+
+ul.card-grid {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  background: white;
+  border: 0.1851851852vw solid #EEEEEE;
+  border-radius: 2.2222222222vw;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+.card.row-card {
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: left;
+}
+.card.row-card .image-container {
+  overflow: hidden;
+  position: relative;
+}
+.card.row-card .image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: left center;
+}
+.card.row-card .row-content {
+  flex: 1;
+}
+.card.row-card .row-icon {
+  flex: 0 0 12.962962963vw;
+  width: 12.962962963vw;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-left: 1.5740740741vw;
+}
+.card.has-shadow {
+  box-shadow: 0vw 1.4814814815vw 2.962962963vw -0.7407407407vw rgba(12, 12, 13, 0.2);
+  /* Fix for persistent :active state on touch devices */
+}
+.card.has-shadow:hover, .card.has-shadow:active {
+  border-color: #000000;
+  box-shadow: 0vw 0vw 0vw 0vw rgba(12, 12, 13, 0);
+}
+.card.has-shadow:not(:focus):not(:hover):not(:active) {
+  border-color: #EEEEEE;
+  box-shadow: 0vw 1.4814814815vw 2.962962963vw -0.7407407407vw rgba(12, 12, 13, 0.2);
+}
+.card.dark-border {
+  border-color: #000000 !important;
+}
+.card.dark-card {
+  background: #000000;
+  color: #ffffff;
+  padding: 2.962962963vw;
+  border-radius: 1.4814814815vw;
+  border: none;
+}
+.card.trivia-card {
+  background: none;
+  color: inherit;
+  border: none;
+  overflow: visible;
+}
+.card.trivia-card .card__wrap {
+  position: relative;
+  perspective: 600px;
+  transform-style: preserve-3d;
+  transform-origin: center center;
+  transition: transform 1s;
+}
+.card.trivia-card .card__wrap.is-flipped {
+  transform: rotateY(-180deg);
+}
+.card.trivia-card .card__face {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  padding: 1.8518518519vw 1.4814814815vw 1.8518518519vw 1.8518518519vw;
+  border: 0.1851851852vw solid transparent;
+  text-align: left;
+  backface-visibility: hidden;
+  border-radius: 1.4814814815vw;
+  overflow: hidden;
+}
+.card.trivia-card .card__face p {
+  text-wrap: unset;
+}
+.card.trivia-card .card__face--front {
+  background: #000000;
+  color: #ffffff;
+  transform: rotateY(0deg);
+}
+.card.trivia-card .card__face--front .icon {
+  position: absolute;
+  bottom: 0.7407407407vw;
+  right: 0.7407407407vw;
+  color: #FE414D;
+}
+.card.trivia-card .card__face--back {
+  background: #ffffff;
+  color: #000000;
+  border-color: #000000;
+  transform: rotateY(180deg);
+}
+.card.trivia-card .card__face--back use[href*=-x] {
+  color: #FE414D;
+}
+.card.trivia-card .card__face--back p.h4 {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1.1111111111vw;
+  margin-bottom: 1.4814814815vw;
+}
+.card.plain-card {
+  border: none;
+  border-radius: 0;
+  gap: 1.1111111111vw;
+  text-align: left;
+}
+.card.plain-card .media {
+  width: 100%;
+  aspect-ratio: 140/73;
+  border: 0.0925925926vw solid #EEEEEE;
+  border-radius: 0.7407407407vw;
+  overflow: hidden;
+  position: relative;
+}
+.card.plain-card .media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  border: 0;
+  padding: 0;
+  white-space: nowrap;
+  clip-path: inset(100%);
+  clip: rect(0 0 0 0);
+  overflow: hidden;
+}
+
+body {
+  overflow: visible;
+}
+
+.admin-header {
+  padding: 4.6296296296vw 4.4444444444vw 2.3148148148vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.8518518519vw;
+  border-bottom: 0.1851851852vw solid #EEEEEE;
+}
+.admin-header .logo {
+  width: 15.5555555556vw;
+}
+.admin-header .logo svg {
+  width: 100%;
+  height: auto;
+}
+.admin-header div {
+  text-align: center;
+}
+.admin-header h1 {
+  font-size: 3.7037037037vw;
+}
+
+.export-section {
+  padding: 2.2222222222vw 4.4444444444vw 3.3333333333vw;
+  background: linear-gradient(to bottom, #FE414D, #ad1d27);
+  color: #ffffff;
+}
+.export-section h2 {
+  font-size: 1.6666666667vw;
+  margin-bottom: 2.2222222222vw;
+  text-align: center;
+}
+.export-section .export-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 1.4814814815vw;
+}
+.export-section button {
+  appearance: none;
+  outline: none;
+  background: #000000;
+  border: 0.1851851852vw solid #000000;
+  color: #ffffff;
+  border-radius: 9.1666666667vw;
+  padding: 1.6666666667vw 2.2222222222vw;
+  font-size: 1.3888888889vw;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.9259259259vw;
+}
+.export-section button svg {
+  width: 1.6666666667vw;
+  height: auto;
+  fill: #ffffff;
+}
+.export-section button.erase-btn {
+  background: #FE414D;
+  border-color: #000000;
+  color: #ffffff;
+}
+.export-section button.erase-btn path {
+  fill: #ffffff;
+  stroke: #ffffff;
+}
+
+.metrics-grid {
+  padding: 4.4444444444vw;
+}
+.metrics-grid .stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2.2222222222vw;
+}
+.metrics-grid .stats-grid .stat-card {
+  background: #000000;
+  color: #ffffff;
+  padding: 2.962962963vw 2.2222222222vw;
+  border-radius: 2.2222222222vw;
+  border: none;
+  text-align: center;
+}
+.metrics-grid .stats-grid .stat-card h3 {
+  font-size: 5.7407407407vw;
+}
+
+.charts {
+  padding: 4.4444444444vw;
+  display: flex;
+  gap: 2.2222222222vw;
+}
+.charts .chart-container {
+  background: #EEEEEE;
+  color: #000000;
+  padding: 1.4814814815vw;
+  border-radius: 2.2222222222vw;
+  border: none;
+}
+
+/*# sourceMappingURL=admin.css.map */

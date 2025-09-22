@@ -34,12 +34,21 @@ body {
 	padding: pxVw(0) pxVw(100);
 	text-align: center;
 	
+		* {
+			pointer-events: none;
+		}
+	
 		&.active {
 			display: flex;
 			flex-direction: column;
 			align-items: center;
 			justify-content: center;
 			animation: fadeIn 0.5s ease;
+			
+				* {
+					pointer-events: auto;
+				}
+			
 		}
 		
 		.view-hero {
@@ -55,6 +64,7 @@ body {
 		}
 		
 		.view-content {
+			width: 100%;
 			height: calc(100% - pxVw(204));
 			padding-top: pxVw(109);
 			display: flex;
@@ -166,6 +176,12 @@ ul.card-grid {
 					border-color: $stroke-hover-color;
 					box-shadow: $shadow-hover;
 				}
+				
+				/* Fix for persistent :active state on touch devices */
+				&:not(:focus):not(:hover):not(:active) {
+					border-color: $stroke-color;
+					box-shadow: $shadow;
+				}
 			
 		}
 		
@@ -258,6 +274,39 @@ ul.card-grid {
 		
 		&.plain-card {
 			border: none;
+			border-radius: 0;
+			gap: pxVw(12);
+			text-align: left;
+				
+				.media {
+					width: 100%;
+					aspect-ratio: 140 / 73;
+					border: pxVw(1) solid $light-gray;
+					border-radius: pxVw(8);
+					overflow: hidden;
+					position: relative;
+					
+						img {
+							width: 100%;
+							height: 100%;
+							object-fit: cover;
+						}
+					
+				}
+			
 		}
 			
+}
+
+.sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	margin: -1px;
+	border: 0;
+	padding: 0;
+	white-space: nowrap;
+	clip-path: inset(100%);
+	clip: rect(0 0 0 0);
+	overflow: hidden;
 }

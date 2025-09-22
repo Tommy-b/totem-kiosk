@@ -21,8 +21,8 @@
 									top: 50%;
 									left: 50%;
 									transform: translate(-50%, -50%);
-									width: 36px;
-									height: 36px;
+									width: pxVw(36);
+									height: pxVw(36);
 									z-index: 2;
 									background: url('../images/play-button.svg') no-repeat center center;
 									background-size: contain;

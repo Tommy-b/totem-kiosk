@@ -1,0 +1,207 @@
+@use "../partials/variables" as *;
+
+
+/* Case studies */
+.case-studies-view {
+	
+		.view-hero {
+			
+				p {
+					padding: 0 pxVw(34);
+				}
+			
+		}
+		
+		.cs-cards {
+			position: relative;
+			width: calc(100% + pxVw(200));
+			margin-left: pxVw(-100);
+			overflow: hidden;
+			
+				.swiper {
+					width: 180vw;
+					left: 50%;
+					transform: translateX(-50%);
+					
+						.swiper-slide {
+							height: unset;
+							
+								.cs-card {
+									height: 100%;
+									padding: pxVw(16);
+									display: flex;
+									flex-direction: column;
+									gap: pxVw(16);
+									margin-bottom: pxVw(10);
+									background: $white;
+									border: pxVw(2) solid $black;
+									border-radius: $border-radius;
+									overflow: hidden;
+									opacity: 0;
+									box-shadow: $shadow-hover;
+									transition: opacity $trans2 ease;
+
+										.card-header {
+											padding: pxVw(42) pxVw(16);
+										}
+
+										.card-content {
+											display: flex;
+											flex-direction: column;
+											flex-grow: 1;
+
+												>div {
+													width: 100%;
+													padding: pxVw(32) pxVw(16);
+													display: flex;
+													align-items: flex-start;
+													gap: pxVw(24);
+													text-align: left;
+
+														&.challenge {
+															border-bottom: pxVw(1) solid $dark-gray;
+														}
+
+														svg {
+															flex: 0 0 pxVw(42);
+														}
+
+														h4 {
+															margin-bottom: pxVw(8);
+														}
+
+												}
+
+										}
+
+										.card-stats {
+											display: grid;
+											grid-template-columns: repeat(3, 1fr);
+											gap: pxVw(4);
+
+												li {
+													background: $black;
+													color: $white;
+													padding: pxVw(32) pxVw(16) pxVw(32) pxVw(32);
+													display: flex;
+													flex-direction: column;
+													align-items: flex-start;
+													justify-content: flex-start;
+													gap: pxVw(24);
+													border-radius: pxVw(16);
+													min-height: pxVw(188);
+													overflow: hidden;
+													text-align: left;
+
+														span {
+															line-height: 1;
+														}
+
+														p {
+
+														}
+
+												}
+
+										}
+
+								}
+								
+								&.swiper-slide-next, &.swiper-slide-prev {
+									
+										.cs-card {
+											opacity: 0.4;
+										}
+									
+								}
+							
+								&.swiper-slide-active {
+									
+										.cs-card {
+											opacity: 1;
+											box-shadow: $shadow;
+										}
+									
+								}
+							
+						}
+						
+						.swiper-pagination {
+							position: relative;
+							margin-top: pxVw(50);
+							bottom: unset;
+							left: unset;
+							right: unset;
+							top: unset;
+							width: 100%;
+							display: flex;
+							justify-content: center;
+							align-items: center;
+							gap: pxVw(12);
+								
+								.swiper-pagination-bullet {
+									width: pxVw(20);
+									height: pxVw(20);
+									margin: 0;
+									opacity: 1;
+									background: $dark-gray;
+									transition: all $trans2 ease;
+									
+										&.swiper-pagination-bullet-active {
+											background: $red;
+										}
+									
+								}
+							
+						}
+						
+						.swiper-nav {
+							display: flex;
+							justify-content: center;
+							align-items: center;
+						}
+					
+				}
+				
+				.swiper-nav {
+					width: 88%;
+					display: flex;
+					justify-content: space-between;
+					align-items: center;
+					position: absolute;
+					top: 40%;
+					left: 50%;
+					transform: translateX(-50%);
+					z-index: 10;
+					pointer-events: none;
+						
+						.swiper-button-next, .swiper-button-prev {
+							background: transparent;
+							position: relative;
+							color: $black;
+							width: pxVw(72);
+							height: unset;
+							aspect-ratio: 1 / 1;
+							pointer-events: auto;
+							transition: all $trans3 ease;
+							
+								&:hover, &:active {
+									transform: scale(0.9);
+								}
+								
+								/* Fix for persistent :active state on touch devices */
+								&:not(:focus):not(:hover):not(:active) {
+									transform: scale(1);
+								}
+							
+								svg {
+									fill: none;
+								}
+							
+						}
+					
+				}
+			
+		}
+	
+}

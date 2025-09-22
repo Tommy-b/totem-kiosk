@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Kiosk Analytics Dashboard</title>
+	<link rel="stylesheet" href="assets/styles/admin.css">
+</head>
+<body>
+	<div class="dashboard-container">
+		
+		<div class="admin-header">
+			<div class="logo">
+				<img src="assets/images/logo-header.svg" alt="Sapient Slingshot Logo">
+			</div>
+			<div>
+				<h1>Analytics Dashboard</h1>
+				<p class="p-sm">Real-time insights into user interactions and engagement</p>
+			</div>
+		</div>
+				
+		<div class="dashboard-content">
+			
+			<!-- Export Section -->
+			<div class="export-section">
+				<h2>Export Data</h2>
+				<div class="export-buttons">
+					<button class="refresh-btn" onclick="refreshDashboard()">
+						<svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<path d="M32.0625 18C32.0628 21.6972 30.6071 25.2458 28.0105 27.8776C25.4139 30.5095 21.8853 32.0129 18.1884 32.0625H18C14.4099 32.0701 10.9546 30.6959 8.35031 28.2248C8.0249 27.9175 7.83491 27.4935 7.82212 27.0461C7.80932 26.5987 7.97479 26.1645 8.28211 25.8391C8.58943 25.5137 9.01343 25.3237 9.46084 25.3109C9.90824 25.2981 10.3424 25.4636 10.6678 25.7709C12.1953 27.2131 14.114 28.173 16.184 28.5309C18.254 28.8887 20.3836 28.6286 22.3067 27.783C24.2297 26.9374 25.8609 25.5438 26.9963 23.7764C28.1318 22.009 28.7213 19.9462 28.691 17.8457C28.6608 15.7452 28.0122 13.7001 26.8262 11.9662C25.6403 10.2322 23.9697 8.88619 22.0231 8.09633C20.0765 7.30647 17.9403 7.10779 15.8815 7.52512C13.8226 7.94245 11.9324 8.95728 10.447 10.4428C10.4288 10.4611 10.4119 10.478 10.3922 10.4948L7.71891 12.9375H10.125C10.5726 12.9375 11.0018 13.1153 11.3182 13.4317C11.6347 13.7482 11.8125 14.1774 11.8125 14.625C11.8125 15.0725 11.6347 15.5018 11.3182 15.8182C11.0018 16.1347 10.5726 16.3125 10.125 16.3125H3.375C2.92745 16.3125 2.49822 16.1347 2.18176 15.8182C1.86529 15.5018 1.6875 15.0725 1.6875 14.625V7.87499C1.6875 7.42744 1.86529 6.99821 2.18176 6.68175C2.49822 6.36528 2.92745 6.18749 3.375 6.18749C3.82255 6.18749 4.25178 6.36528 4.56824 6.68175C4.88471 6.99821 5.0625 7.42744 5.0625 7.87499V10.7887L8.08313 8.02405C10.0531 6.06462 12.5595 4.73271 15.2858 4.19641C18.0121 3.66012 20.8361 3.94348 23.4015 5.01074C25.9669 6.078 28.1586 7.88132 29.7001 10.1931C31.2415 12.5049 32.0636 15.2214 32.0625 18Z" fill="currentColor"/>
+						</svg>
+						Refresh Data
+					</button>
+					<button class="export-btn" onclick="exportSessions()">
+						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 41.58 36.16">
+							<path d="M0,14.06v14.13c0,4.4,3.56,7.96,7.96,7.96h25.66c4.4,0,7.96-3.56,7.96-7.96v-14.13c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5,1.5v14.13c0,1.37-.55,2.61-1.45,3.51-.9.9-2.13,1.45-3.51,1.45H7.96c-1.37,0-2.61-.55-3.51-1.45-.9-.9-1.45-2.13-1.45-3.51v-14.13c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5,1.5Z"/>
+							<path d="M20.79,0c.45,0,.88.18,1.19.49.32.32.49.75.49,1.19v20.67l7.24-7.25c.32-.32.75-.5,1.2-.5s.88.18,1.2.5c.32.32.5.75.5,1.2s-.18.88-.5,1.2l-10.12,10.13c-.16.16-.34.28-.55.37-.21.09-.43.13-.65.13s-.44-.04-.65-.13c-.21-.09-.39-.21-.55-.37l-10.13-10.13c-.16-.16-.28-.34-.37-.55-.08-.21-.13-.42-.13-.65s.04-.44.13-.65c.08-.21.21-.39.37-.55.16-.16.34-.28.55-.37.21-.09.42-.13.65-.13s.44.04.65.13c.21.08.39.21.55.37l7.24,7.25V1.69c0-.45.18-.88.49-1.19.32-.32.75-.49,1.19-.49Z"/>
+						</svg>
+						Export Session Data
+					</button>
+					<button class="export-btn secondary" onclick="exportFormSubmissions()">
+						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 41.58 36.16">
+							<path d="M0,14.06v14.13c0,4.4,3.56,7.96,7.96,7.96h25.66c4.4,0,7.96-3.56,7.96-7.96v-14.13c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5,1.5v14.13c0,1.37-.55,2.61-1.45,3.51-.9.9-2.13,1.45-3.51,1.45H7.96c-1.37,0-2.61-.55-3.51-1.45-.9-.9-1.45-2.13-1.45-3.51v-14.13c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5,1.5Z"/>
+							<path d="M20.79,0c.45,0,.88.18,1.19.49.32.32.49.75.49,1.19v20.67l7.24-7.25c.32-.32.75-.5,1.2-.5s.88.18,1.2.5c.32.32.5.75.5,1.2s-.18.88-.5,1.2l-10.12,10.13c-.16.16-.34.28-.55.37-.21.09-.43.13-.65.13s-.44-.04-.65-.13c-.21-.09-.39-.21-.55-.37l-10.13-10.13c-.16-.16-.28-.34-.37-.55-.08-.21-.13-.42-.13-.65s.04-.44.13-.65c.08-.21.21-.39.37-.55.16-.16.34-.28.55-.37.21-.09.42-.13.65-.13s.44.04.65.13c.21.08.39.21.55.37l7.24,7.25V1.69c0-.45.18-.88.49-1.19.32-.32.75-.49,1.19-.49Z"/>
+						</svg>
+						Export Form Entries
+					</button>
+					<!--<button class="export-btn secondary" onclick="exportAllData()">
+						📦 Export All Data (JSON)
+					</button>-->
+					<button class="erase-btn" onclick="clearAllData()">
+						<svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<path d="M29.3193 26.9311C29.6363 27.2481 29.8144 27.6781 29.8144 28.1264C29.8144 28.5747 29.6363 29.0047 29.3193 29.3217C29.0023 29.6387 28.5723 29.8168 28.124 29.8168C27.6757 29.8168 27.2457 29.6387 26.9287 29.3217L18.0004 20.3906L9.06933 29.3189C8.75232 29.6359 8.32235 29.814 7.87402 29.814C7.42569 29.814 6.99573 29.6359 6.67871 29.3189C6.36169 29.0019 6.18359 28.5719 6.18359 28.1236C6.18359 27.6753 6.36169 27.2453 6.67871 26.9283L15.6098 18L6.68152 9.06891C6.3645 8.75189 6.18641 8.32193 6.18641 7.8736C6.18641 7.42527 6.3645 6.9953 6.68152 6.67828C6.99854 6.36127 7.4285 6.18317 7.87683 6.18317C8.32516 6.18317 8.75513 6.36127 9.07215 6.67828L18.0004 15.6094L26.9315 6.67688C27.2485 6.35986 27.6785 6.18176 28.1268 6.18176C28.5752 6.18176 29.0051 6.35986 29.3221 6.67688C29.6392 6.99389 29.8173 7.42386 29.8173 7.87219C29.8173 8.32052 29.6392 8.75049 29.3221 9.0675L20.3911 18L29.3193 26.9311Z" fill="black"/>
+						</svg>
+						Clear All Data
+					</button>
+				</div>
+			</div>
+
+			<div class="metrics-grid">
+				<!-- Key Metrics -->
+				<div class="stats-grid">
+					<div class="stat-card">
+						<h3 id="totalUsers">0</h3>
+						<p>Unique Users</p>
+					</div>
+					<div class="stat-card">
+						<h3 id="avgSessionTime">0m</h3>
+						<p>Avg. Session Time</p>
+					</div>
+					<div class="stat-card">
+						<h3 id="totalFormSubmissions">0</h3>
+						<p>Form Submissions</p>
+					</div>
+					<div class="stat-card">
+						<h3 id="totalSlideInteractions">0</h3>
+						<p>Slide Interactions</p>
+					</div>
+				</div>
+				
+			</div>
+
+			<!-- Charts -->
+			 
+			<div class="charts">
+				<div class="chart-container">
+					<h2 class="chart-title">Most Popular Views</h2>
+					<div class="chart" id="viewsChart">
+						<!-- Chart bars will be generated here -->
+					</div>
+				</div>
+
+				<div class="chart-container">
+					<h2 class="chart-title">Slider Interactions</h2>
+					<div class="chart" id="swiperChart">
+						<!-- Chart bars will be generated here -->
+					</div>
+				</div>
+			</div>
+
+			<!-- Recent Sessions -->
+			<div class="data-table">
+				<div class="table-header">Recent Sessions</div>
+				<div class="table-content" id="sessionsTable">
+					<!-- Session data will be populated here -->
+				</div>
+			</div>
+
+			<!-- Form Submissions -->
+			<div class="data-table">
+				<div class="table-header">Form Submissions</div>
+				<div class="table-legend">
+					<div>Name</div>
+					<div>Company</div>
+					<div>Work Email</div>
+					<div>Country</div>
+				</div>
+				<div class="table-content" id="submissionsTable">
+					<!-- Form submissions will be populated here -->
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		// Utility functions
+		function formatTimestamp(timestamp) {
+			const date = new Date(timestamp);
+			return date.toLocaleString('en-US', {
+				year: 'numeric',
+				month: 'short',
+				day: 'numeric',
+				hour: '2-digit',
+				minute: '2-digit',
+				second: '2-digit',
+				hour12: true
+			});
+		}
+
+		// Mapping function for user-friendly names
+		function mapToFriendlyName(technicalName, type) {
+			const mappings = {
+				// Views
+				'welcome': 'Welcome Screen',
+				'pathSelection': 'Path Selection',
+				'technicalDashboard': 'Technical Dashboard',
+				'businessDashboard': 'Business Dashboard',
+				'platformWalkthrough': 'Platform Walkthrough',
+				'demosTech': 'Demo Library (Technical Path)',
+				'demosBusiness': 'Demo Library (Business Path)',
+				'caseStudiesBusiness': 'Case Studies (Business Path)',
+				'caseStudiesTechnical': 'Case Studies (Technical Path)',
+				'businessQuiz': 'Business Path Quiz',
+				'technicalQuiz': 'Technical Path Quiz',
+				
+				// Modals/Swipers
+				'walkthroughOverlay': 'Platform Walkthrough Modal',
+				'demosBusinessOverlay': 'Demo Library (Business Path) Modal',
+				'demosTechOverlay': 'Demo Library (Technical Path) Modal',
+				'brochureOverlay': 'Brochure Modal',
+				'hfsOverlay': 'HFS Report Modal',
+				'formOverlay': 'Contact Form',
+				
+				// Swiper Names
+				'walkthroughSwiper': 'Platform Walkthrough Slider',
+				'demoBusinessSwiper': 'Demo Library (Business Path) Slider',
+				'demoTechSwiper': 'Demo Library (Technical Path) Slider',
+				'brochureSwiper': 'Brochure Slider',
+				'hfsSwiper': 'HFS Report Slider',
+				'caseStudiesSwiper': 'Case Studies Slider',
+				
+				// Quiz Types
+				'business': 'Business Path',
+				'technical': 'Technical Path',
+				
+				// Case Study Types
+				'Business': 'Business Path',
+				'Technical': 'Technical Path'
+			};
+			
+			return mappings[technicalName] || technicalName;
+		}
+
+		function mapArrayToFriendlyNames(array) {
+			return array.map(item => mapToFriendlyName(item)).join('; ');
+		}
+
+		function formatDuration(seconds) {
+			const hours = Math.floor(seconds / 3600);
+			const minutes = Math.floor((seconds % 3600) / 60);
+			const secs = seconds % 60;
+						
+			if (hours > 0) {
+				return `${hours}h ${minutes}m ${secs}s`;
+			} else if (minutes > 0) {
+				return `${minutes}m ${secs}s`;
+			} else {
+				return `${secs}s`;
+			}
+		}
+
+		function getAnalyticsData() {
+			return JSON.parse(localStorage.getItem('kioskAnalytics') || '[]');
+		}
+
+		function getFormSubmissions() {
+			return JSON.parse(localStorage.getItem('kioskSubmissions') || '[]');
+		}
+
+		function getSessionsData() {
+			const analytics = getAnalyticsData();
+			const sessions = {};
+						
+			analytics.forEach(event => {
+				if (event.session_id) {
+					if (!sessions[event.session_id]) {
+						sessions[event.session_id] = {
+							id: event.session_id,
+							startTime: event.timestamp,
+							endTime: event.timestamp,
+							events: [],
+							duration: 0
+						};
+					}
+										
+					sessions[event.session_id].events.push(event);
+					sessions[event.session_id].endTime = event.timestamp;
+				}
+			});
+						
+			// Calculate durations
+			Object.values(sessions).forEach(session => {
+				const start = new Date(session.startTime);
+				const end = new Date(session.endTime);
+				session.duration = Math.floor((end - start) / 1000);
+			});
+						
+			return Object.values(sessions).sort((a, b) => new Date(b.startTime) - new Date(a.startTime));
+		}
+
+		function calculateMetrics() {
+			const sessions = getSessionsData();
+			const submissions = getFormSubmissions();
+			const analytics = getAnalyticsData();
+						
+			const totalSessions = sessions.length;
+			const totalUsers = new Set(sessions.map(s => s.id)).size;
+			const avgSessionTime = totalSessions > 0 ? 
+				Math.floor(sessions.reduce((sum, s) => sum + s.duration, 0) / totalSessions) : 0;
+			const totalFormSubmissions = submissions.length;
+						
+			// Count slide interactions
+			const totalSlideInteractions = analytics.filter(event => 
+				event.type === 'swiper_slide_changed' || event.type === 'swiper_slide_goto' || event.type === 'case_study_slide_changed'
+			).length;
+						
+			document.getElementById('totalUsers').textContent = totalUsers;
+			document.getElementById('avgSessionTime').textContent = formatDuration(avgSessionTime);
+			document.getElementById('totalFormSubmissions').textContent = totalFormSubmissions;
+			document.getElementById('totalSlideInteractions').textContent = totalSlideInteractions;
+		}
+
+		function createViewsChart() {
+			const analytics = getAnalyticsData();
+			const chartContainer = document.getElementById('viewsChart');
+			chartContainer.innerHTML = '';
+						
+			if (analytics.length === 0) {
+				chartContainer.innerHTML = '<div class="no-data">No view data available</div>';
+				return;
+			}
+						
+			// Count view changes
+			const viewCounts = {};
+			analytics.forEach(event => {
+				if (event.type === 'view_change' && event.to) {
+					viewCounts[event.to] = (viewCounts[event.to] || 0) + 1;
+				}
+			});
+						
+			const maxViews = Math.max(...Object.values(viewCounts));
+			const views = Object.entries(viewCounts).sort((a, b) => b[1] - a[1]);
+						
+			views.forEach(([view, count]) => {
+				const height = (count / maxViews) * 250;
+				
+				const bar = document.createElement('div');
+				bar.className = 'bar';
+				bar.style.height = `${height}px`;
+				
+				const label = document.createElement('div');
+				label.className = 'bar-label';
+				label.textContent = mapToFriendlyName(view);
+				
+				const value = document.createElement('div');
+				value.className = 'bar-value';
+				value.textContent = count;
+				
+				bar.appendChild(label);
+				bar.appendChild(value);
+				chartContainer.appendChild(bar);
+			});
+		}
+
+		function createSwiperChart() {
+			const analytics = getAnalyticsData();
+			const chartContainer = document.getElementById('swiperChart');
+			chartContainer.innerHTML = '';
+						
+			if (analytics.length === 0) {
+				chartContainer.innerHTML = '<div class="no-data">No slider data available</div>';
+				return;
+			}
+						
+			// Count swiper interactions
+			const swiperCounts = {};
+			analytics.forEach(event => {
+				if ((event.type === 'swiper_slide_changed' || event.type === 'swiper_slide_goto' || event.type === 'case_study_slide_changed') && event.swiper_name) {
+					if (!swiperCounts[event.swiper_name]) {
+						swiperCounts[event.swiper_name] = 0;
+					}
+					swiperCounts[event.swiper_name]++;
+				}
+			});
+						
+			if (Object.keys(swiperCounts).length === 0) {
+				chartContainer.innerHTML = '<div class="no-data">No swiper interactions recorded</div>';
+				return;
+			}
+						
+			const maxInteractions = Math.max(...Object.values(swiperCounts));
+			const swipers = Object.entries(swiperCounts).sort((a, b) => b[1] - a[1]);
+						
+			swipers.forEach(([swiperName, count]) => {
+				const height = (count / maxInteractions) * 250;
+				
+				const bar = document.createElement('div');
+				bar.className = 'bar';
+				bar.style.height = `${height}px`;
+				
+				const label = document.createElement('div');
+				label.className = 'bar-label';
+				label.textContent = mapToFriendlyName(swiperName);
+				
+				const value = document.createElement('div');
+				value.className = 'bar-value';
+				value.textContent = count;
+				
+				bar.appendChild(label);
+				bar.appendChild(value);
+				chartContainer.appendChild(bar);
+			});
+		}
+
+		function populateSessionsTable() {
+			const sessions = getSessionsData();
+			const tableContainer = document.getElementById('sessionsTable');
+						
+			if (sessions.length === 0) {
+				tableContainer.innerHTML = '<div class="no-data">No session data available</div>';
+				return;
+			}
+						
+			const recentSessions = sessions.slice(0, 10);
+						
+			recentSessions.forEach(session => {
+				const sessionDiv = document.createElement('div');
+				sessionDiv.className = 'session-item';
+								
+				const eventCount = session.events.length;
+				const viewChanges = session.events.filter(e => e.type === 'view_change').length;
+				const quizCompletions = session.events.filter(e => e.type === 'quiz_completed').length;
+								
+				sessionDiv.innerHTML = `
+					<div class="session-header">
+						<span class="session-id">${session.id}</span>
+						<span class="session-duration">${formatDuration(session.duration)}</span>
+					</div>
+					<div class="session-events">
+						Started: ${formatTimestamp(session.startTime)}<br>
+						Events: ${eventCount} | Views: ${viewChanges} | Quizzes: ${quizCompletions}
+					</div>
+				`;
+								
+				tableContainer.appendChild(sessionDiv);
+			});
+		}
+
+		function populateSubmissionsTable() {
+			const submissions = getFormSubmissions();
+			const tableContainer = document.getElementById('submissionsTable');
+						
+			if (submissions.length === 0) {
+				tableContainer.innerHTML = '<div class="no-data">No form submissions available</div>';
+				return;
+			}
+						
+			const recentSubmissions = submissions.slice(-10).reverse();
+						
+			recentSubmissions.forEach(submission => {
+				const row = document.createElement('div');
+				row.className = 'table-row';
+								
+				row.innerHTML = `
+					<div>${submission['First Name']} ${submission['Last Name']}</div>
+					<div>${submission['Company']}</div>
+					<div>${submission['Work Email']}</div>
+					<div>${submission['Country']}</div>
+				`;
+								
+				tableContainer.appendChild(row);
+			});
+		}
+
+		function exportToCSV(data, filename) {
+			if (data.length === 0) {
+				alert('No data to export');
+				return;
+			}
+						
+			const headers = Object.keys(data[0]);
+			const csvContent = [
+				headers.join(','),
+				...data.map(row => 
+					headers.map(header => {
+						const value = row[header];
+						return typeof value === 'string' && value.includes(',') ? 
+							`"${value}"` : value;
+					}).join(',')
+				)
+			].join('\n');
+						
+			const blob = new Blob([csvContent], { type: 'text/csv' });
+			const url = window.URL.createObjectURL(blob);
+			const a = document.createElement('a');
+			a.href = url;
+			a.download = filename;
+			a.click();
+			window.URL.revokeObjectURL(url);
+		}
+
+		function exportSessions() {
+			const sessions = getSessionsData();
+			const analytics = getAnalyticsData();
+			
+			// Create session summary data
+			const sessionData = sessions.map(session => {
+				const sessionEvents = analytics.filter(event => event.session_id === session.id);
+				
+				// Count different event types
+				const eventCounts = {};
+				const views = new Set();
+				const modals = new Set();
+				const quizzes = new Set();
+				const caseStudies = new Set();
+				let totalSlideInteractions = 0;
+				let quizScore = null;
+				
+				sessionEvents.forEach(event => {
+					// Count event types
+					eventCounts[event.type] = (eventCounts[event.type] || 0) + 1;
+					
+					// Track views
+					if (event.view) views.add(event.view);
+					
+					// Track modals
+					if (event.modal_name) modals.add(event.modal_name);
+					
+					// Track quizzes
+					if (event.quiz_type) quizzes.add(event.quiz_type);
+					
+					// Track case studies
+					if (event.type === 'case_study_slide_changed' && event.case_study_title) {
+						caseStudies.add(event.case_study_title);
+					}
+					
+					// Count slide interactions
+					if (event.type === 'swiper_slide_changed' || event.type === 'swiper_slide_goto' || event.type === 'case_study_slide_changed') {
+						totalSlideInteractions++;
+					}
+					
+					// Get quiz score
+					if (event.type === 'quiz_completed' && event.score !== undefined) {
+						quizScore = event.score;
+					}
+				});
+				
+				return {
+					'Session ID': session.id,
+					'Start Time': formatTimestamp(session.startTime),
+					'End Time': formatTimestamp(session.endTime),
+					'Duration': formatDuration(session.duration),
+					'Total Events': sessionEvents.length,
+					'View Changes': eventCounts['view_change'] || 0,
+					'Views Visited': mapArrayToFriendlyNames(Array.from(views)),
+					'Case Studies Viewed': Array.from(caseStudies).join('; '),
+					'Modal Opens': eventCounts['modal_opened'] || 0,
+					'Modals Opened': mapArrayToFriendlyNames(Array.from(modals)),
+					'Slide Interactions': totalSlideInteractions,
+					'Quizzes Taken': mapArrayToFriendlyNames(Array.from(quizzes)),
+					'Highest Quiz Score': quizScore || 'N/A',
+					'Form Submissions': eventCounts['form_submitted'] || 0,
+				};
+			});
+			
+			exportToCSV(sessionData, `kiosk-sessions-${new Date().toISOString().split('T')[0]}.csv`);
+		}
+
+		function exportFormSubmissions() {
+			const submissions = getFormSubmissions();
+			const formattedData = submissions.map(submission => ({
+				'First Name': submission['First Name'],
+				'Last Name': submission['Last Name'],
+				'Company': submission['Company'],
+				'Work Email': submission['Work Email'],
+				'Country': submission['Country'],
+				'Submitted At': formatTimestamp(submission.timestamp)
+			}));
+						
+			exportToCSV(formattedData, `kiosk-submissions-${new Date().toISOString().split('T')[0]}.csv`);
+		}
+
+		function exportAllData() {
+			const allData = {
+				analytics: getAnalyticsData(),
+				submissions: getFormSubmissions(),
+				sessions: getSessionsData(),
+				exportDate: new Date().toISOString()
+			};
+						
+			const blob = new Blob([JSON.stringify(allData, null, 2)], { type: 'application/json' });
+			const url = window.URL.createObjectURL(blob);
+			const a = document.createElement('a');
+			a.href = url;
+			a.download = `kiosk-all-data-${new Date().toISOString().split('T')[0]}.json`;
+			a.click();
+			window.URL.revokeObjectURL(url);
+		}
+
+		function refreshDashboard() {
+			calculateMetrics();
+			createViewsChart();
+			createSwiperChart();
+			populateSessionsTable();
+			populateSubmissionsTable();
+		}
+
+		function clearAllData() {
+			if (confirm('Are you sure you want to clear all analytics and form submission data? This action cannot be undone.')) {
+				localStorage.removeItem('kioskAnalytics');
+				localStorage.removeItem('kioskSubmissions');
+				refreshDashboard();
+				alert('All data has been cleared.');
+			}
+		}
+
+		// Initialize dashboard on load
+		document.addEventListener('DOMContentLoaded', function() {
+			refreshDashboard();
+		});
+	</script>
+</body>
+</html>

@@ -1,3 +1,4 @@
+@use "variables" as *;
 /* Typography */
 @font-face {
 	font-family: 'Futura Next';
@@ -27,47 +28,47 @@ h6, .h6 {
 }
 
 h1, .h1 {
-	font-size: 8.889vw;
+	font-size: pxVw(96);
 	line-height: 1.15;
 }
 
 h2, .h2 {
-	font-size: 4.444vw;
+	font-size: pxVw(48);
 	line-height: 1.33;
 }
 
 h3, .h3 {
-	font-size: 2.963vw;
+	font-size: pxVw(32);
 	line-height: 1.31;
 }
 
 h4, .h4 {
-	font-size: 1.852vw;
+	font-size: pxVw(20);
 	line-height: 1.6;
 }
 
 h5, .h5 {
-	font-size: 1.481vw;
+	font-size: pxVw(16);
 	line-height: 1.6;
 }
 
 h6, .h6 {
-	font-size: 1.481vw;
+	font-size: pxVw(16);
 	line-height: 1.6;
 }
 
 p {
-	font-size: 1.852vw;
+	font-size: pxVw(20);
 	font-weight: 400;
 	line-height: 1.6;
 	
 		&.p-sm {
-			font-size: 1.481vw;
+			font-size: pxVw(16);
 			line-height: 1.5;
 		}
 		
 		&.p-lg {
-			font-size: 2.222vw;
+			font-size: pxVw(24);
 			line-height: 1.5;
 		}
 	

@@ -1,0 +1,143 @@
+@forward "partials/variables";
+
+@use "partials/variables" as *;
+@use "partials/reset";
+@use "partials/typography";
+@use "partials/global";
+
+body {
+	overflow: visible;
+}
+
+
+.admin-header {
+	padding: pxVw(50) pxVw(48) pxVw(25);
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: pxVw(20);
+	border-bottom: pxVw(2) solid $light-gray;
+	
+		.logo {
+			width: pxVw(168);
+			
+				svg {
+					width: 100%;
+					height: auto;
+				}
+				
+		}
+		
+		div {
+			text-align: center;
+		}
+		
+		h1 {
+			font-size: pxVw(40);
+		}
+	
+}
+
+.dashboard-content {
+	//padding: pxVw(0) pxVw(48) pxVw(48);
+}
+
+.export-section {
+	padding: pxVw(24) pxVw(48) pxVw(36);
+	background: linear-gradient(to bottom, $red, #ad1d27);
+	color: $white;
+	
+		h2 {
+			font-size: pxVw(18);
+			margin-bottom: pxVw(24);
+			text-align: center;
+		}
+	
+		.export-buttons {
+			display: grid;
+			grid-template-columns: 1fr 1fr 1fr 1fr;
+			gap: pxVw(16);
+		}
+		
+		button {
+			appearance: none;
+			outline: none;
+			background: $black;
+			border: pxVw(2) solid $black;
+			color: $white;
+			border-radius: pxVw(99);
+			padding: pxVw(18) pxVw(24);
+			font-size: pxVw(15);
+			font-weight: 600;
+			cursor: pointer;
+			transition: all $trans3 ease;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			gap: pxVw(10);
+			
+				svg {
+					width: pxVw(18);
+					height: auto;
+					
+						fill: $white;
+					
+				}
+				
+				&.erase-btn {
+					background: $red;
+					border-color: $black;
+					color: $white;
+
+						path {
+							fill: $white;
+							stroke: $white;
+						}
+
+				}
+			
+		}
+	
+}
+
+.metrics-grid {
+	padding: pxVw(48);
+	
+		.stats-grid {
+			display: grid;
+			grid-template-columns: repeat(4, 1fr);
+			gap: pxVw(24);
+			
+				.stat-card {
+					background: $black;
+					color: $white;
+					padding: pxVw(32) pxVw(24);
+					border-radius: pxVw(24);
+					border: none;
+					text-align: center;
+					
+						h3 {
+							font-size: pxVw(62);
+						}
+					
+				}
+			
+		}
+	
+}
+
+.charts {
+	padding: pxVw(48);
+	display: flex;
+	gap: pxVw(24);
+	
+		.chart-container {
+			background: $light-gray;
+			color: $black;
+			padding: pxVw(16);
+			border-radius: pxVw(24);
+			border: none;
+		}
+	
+}

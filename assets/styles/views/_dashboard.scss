@@ -5,9 +5,10 @@
 	
 		.view-content {
 			gap: 0;
+			padding-top: pxVw(98);
 
 				.view-hero {
-					margin-bottom: pxVw(100);
+					margin-bottom: pxVw(75);
 				}
 
 		}
@@ -46,12 +47,12 @@
 		}
 		
 		.card.dashboard-card {
-			gap: pxVw(36);
 
 				.image-container {
 					flex: 0 0 pxVw(160);
 					width: pxVw(160);
 					aspect-ratio: 1 / 1;
+					margin-right: pxVw(36);
 				}
 
 				.row-icon {
@@ -71,6 +72,10 @@
 						}
 
 				}
+				
+				p {
+					text-wrap: unset;
+				}
 
 				&:hover, &:active {
 
@@ -78,6 +83,13 @@
 							transform: scale(1.19);
 						}
 
+				}
+				
+				/* Fix for persistent :active state on touch devices */
+				&:not(:focus):not(:hover):not(:active) {
+					.row-icon svg {
+						transform: scale(1);
+					}
 				}
 
 				&.visited {
@@ -103,7 +115,7 @@
 
 		}
 		
-		&#business-dashboard {
+		&#businessDashboard {
 
 				.trivia-card .card__wrap {
 					aspect-ratio: 1 / 1;
@@ -111,7 +123,7 @@
 
 		}
 
-		&#technical-dashboard {
+		&#technicalDashboard {
 
 				.trivia-card .card__wrap {
 					aspect-ratio: 283 / 240;
