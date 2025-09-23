@@ -39,13 +39,9 @@ body {
 	
 }
 
-.dashboard-content {
-	//padding: pxVw(0) pxVw(48) pxVw(48);
-}
-
 .export-section {
 	padding: pxVw(24) pxVw(48) pxVw(36);
-	background: linear-gradient(to bottom, $red, #ad1d27);
+	background: linear-gradient(to bottom, $red, $red-dark);
 	color: $white;
 	
 		h2 {
@@ -76,6 +72,8 @@ body {
 			align-items: center;
 			justify-content: center;
 			gap: pxVw(10);
+			transform: scale(1);
+			box-shadow: $shadow;
 			
 				svg {
 					width: pxVw(18);
@@ -95,6 +93,16 @@ body {
 							stroke: $white;
 						}
 
+				}
+				
+				&:hover, &:active {
+					transform: scale(0.98);
+					box-shadow: $shadow-hover;
+				}
+				
+				&:not(:focus):not(:hover):not(:active) {
+					transform: scale(1);
+					box-shadow: $shadow;
 				}
 			
 		}
@@ -129,15 +137,207 @@ body {
 
 .charts {
 	padding: pxVw(48);
-	display: flex;
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
 	gap: pxVw(24);
 	
 		.chart-container {
-			background: $light-gray;
+			border: pxVw(2) solid $light-gray;
 			color: $black;
-			padding: pxVw(16);
 			border-radius: pxVw(24);
-			border: none;
+			box-shadow: $shadow;
+			overflow: hidden;
+		}
+		
+		.chart-title {
+			font-size: pxVw(36);
+			padding: pxVw(16);
+			background: linear-gradient(to bottom, $red, $red-dark);
+			color: $white;
+		}
+		
+		.chart {
+			display: flex;
+			flex-direction: column;
+			gap: pxVw(16);
+			padding: pxVw(16) pxVw(16) pxVw(32);
+		}
+
+		.horizontal-bar-container {
+			display: flex;
+			flex-direction: column;
+			gap: pxVw(2);
+			border-bottom: pxVw(1) solid $dark-gray;
+		}
+
+		.bar-label {
+			font-size: pxVw(14);
+			color: $black;
+			font-weight: 600;
+		}
+
+		.bar-wrapper {
+			width: 90%;
+			position: relative;
+			height: pxVw(16);
+		}
+
+		.horizontal-bar {
+			height: 100%;
+			background: linear-gradient(to right, $red, $red-dark);
+			transition: all 0.3s ease;
+			position: relative;
+		}
+
+		.bar-value {
+			position: absolute;
+			right: -10%;
+			top: 50%;
+			transform: translateY(-50%);
+			font-size: pxVw(12);
+			font-weight: 600;
+			color: $black;
+			display: flex;
+			align-items: center;
+			justify-content: center;
 		}
 	
+}
+
+.tables {
+	padding: pxVw(0) pxVw(48) pxVw(48);
+	display: grid;
+	grid-template-columns: 0.5fr 1fr;
+	gap: pxVw(24);
+	
+		.data-table {
+			border: pxVw(2) solid $light-gray;
+			color: $black;
+			border-radius: pxVw(24);
+			box-shadow: $shadow;
+			overflow: hidden;
+		}
+		
+		.table-header {
+			font-size: pxVw(36);
+			font-weight: 600;
+			padding: pxVw(16);
+			background: linear-gradient(to bottom, $red, $red-dark);
+			color: $white;
+		}
+		
+		.table-content {
+			max-height: pxVw(600);
+			overflow-y: auto;
+		}
+		
+		.table-legend {
+			display: grid;
+			grid-template-columns: 1fr 1fr 1fr 10%;
+			background: #bebebe;
+			border-bottom: pxVw(1) solid #909090;
+
+				div {
+					padding: pxVw(8);
+					font-size: pxVw(10);
+					font-weight: 600;
+					color: $black;
+					border-right: pxVw(1) solid #909090;
+
+						&:first-child {
+							padding-left: pxVw(16);
+						}
+
+						&:last-child {
+							border-right: none;
+						}
+
+				}
+		}
+
+		.table-row {
+			display: grid;
+			grid-template-columns: 1fr 1fr 1fr 10%;
+			border-bottom: pxVw(1) solid $dark-gray;
+
+				div {
+					font-size: pxVw(12);
+					color: $black;
+					text-overflow: ellipsis;
+					padding: pxVw(8);
+					overflow: hidden;
+					white-space: nowrap;
+					border-right: pxVw(1) solid $dark-gray;
+
+						&:first-child {
+							padding-left: pxVw(16);
+						}
+
+						&:last-child {
+							border-right: none;
+						}
+
+				}
+
+		}
+
+		.table-row:nth-child(even) {
+			background: #f8f9fa;
+		}
+		
+		.no-data {
+			font-size: pxVw(14);
+			color: $black;
+			text-align: center;
+			padding: pxVw(48);
+			font-style: italic;
+		}
+	
+}
+
+.session-item {
+	padding: pxVw(16);
+	border-bottom: pxVw(1) solid $light-gray;
+	
+		.session-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-bottom: 10px;
+		}
+		
+		.session-id {
+			font-size: pxVw(13);
+			font-weight: 600;
+			color: $red;
+		}
+
+		.session-duration {
+			color: #28a745;
+			font-weight: 600;
+		}
+		
+		.session-events {
+			font-size: pxVw(12);
+			color: $black;
+		}
+	
+}
+
+.footer {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: $white;
+	border-top: 1px solid $dark-gray;
+	height: pxVw(180);
+	text-align: center;
+	flex-shrink: 0;
+	margin-top: pxVw(120);
+
+	img {
+		width: 17.037vw;
+		height: auto;
+	}
+
 }

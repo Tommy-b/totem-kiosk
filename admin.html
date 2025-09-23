@@ -98,28 +98,37 @@
 				</div>
 			</div>
 
-			<!-- Recent Sessions -->
-			<div class="data-table">
-				<div class="table-header">Recent Sessions</div>
-				<div class="table-content" id="sessionsTable">
-					<!-- Session data will be populated here -->
+			<div class="tables">
+				<!-- Recent Sessions -->
+				<div class="data-table">
+					<div class="table-header">Recent Sessions</div>
+					<div class="table-content" id="sessionsTable">
+						<!-- Session data will be populated here -->
+					</div>
 				</div>
-			</div>
 
-			<!-- Form Submissions -->
-			<div class="data-table">
-				<div class="table-header">Form Submissions</div>
-				<div class="table-legend">
-					<div>Name</div>
-					<div>Company</div>
-					<div>Work Email</div>
-					<div>Country</div>
-				</div>
-				<div class="table-content" id="submissionsTable">
-					<!-- Form submissions will be populated here -->
+				<!-- Form Submissions -->
+				<div class="data-table">
+					<div class="table-header">Form Submissions</div>
+					<div class="table-legend">
+						<div>Name</div>
+						<div>Company</div>
+						<div>Work Email</div>
+						<div>Country</div>
+					</div>
+					<div class="table-content" id="submissionsTable">
+						<!-- Form submissions will be populated here -->
+					</div>
 				</div>
 			</div>
+			
 		</div>
+		
+		<!-- Footer -->
+		<footer class="footer">
+			<img src="assets/images/logo-footer.svg" alt="Publicis Sapient Logo">
+		</footer>
+		
 	</div>
 
 	<script>
@@ -142,10 +151,10 @@
 			const mappings = {
 				// Views
 				'welcome': 'Welcome Screen',
-				'pathSelection': 'Path Selection',
+				'pathSelect': 'Choose your path',
 				'technicalDashboard': 'Technical Dashboard',
 				'businessDashboard': 'Business Dashboard',
-				'platformWalkthrough': 'Platform Walkthrough',
+				'walkthrough': 'Platform Walkthrough',
 				'demosTech': 'Demo Library (Technical Path)',
 				'demosBusiness': 'Demo Library (Business Path)',
 				'caseStudiesBusiness': 'Case Studies (Business Path)',
@@ -264,17 +273,44 @@
 			const analytics = getAnalyticsData();
 			const chartContainer = document.getElementById('viewsChart');
 			chartContainer.innerHTML = '';
-						
-			if (analytics.length === 0) {
-				chartContainer.innerHTML = '<div class="no-data">No view data available</div>';
-				return;
-			}
-						
-			// Count view changes
+			
+			// Define all possible views (excluding welcome screen)
+			const allViews = [
+				'pathSelect', 
+				'technicalDashboard',
+				'businessDashboard',
+				'walkthrough',
+				'demosTech',
+				'demosBusiness',
+				'caseStudiesBusiness',
+				'caseStudiesTechnical',
+				'businessQuiz',
+				'technicalQuiz'
+			];
+			
+			// Count unique view visits per session (first visit only)
 			const viewCounts = {};
+			const sessionViewVisits = {};
+			
+			// Initialize all views with zero counts
+			allViews.forEach(view => {
+				viewCounts[view] = 0;
+			});
+			
+			// Group events by session
 			analytics.forEach(event => {
-				if (event.type === 'view_change' && event.to) {
-					viewCounts[event.to] = (viewCounts[event.to] || 0) + 1;
+				if (event.session_id) {
+					if (!sessionViewVisits[event.session_id]) {
+						sessionViewVisits[event.session_id] = new Set();
+					}
+					
+					// Only count the first visit to each view per session
+					if (event.type === 'view_change' && event.to && !sessionViewVisits[event.session_id].has(event.to)) {
+						sessionViewVisits[event.session_id].add(event.to);
+						if (viewCounts.hasOwnProperty(event.to)) {
+							viewCounts[event.to]++;
+						}
+					}
 				}
 			});
 						
@@ -282,23 +318,31 @@
 			const views = Object.entries(viewCounts).sort((a, b) => b[1] - a[1]);
 						
 			views.forEach(([view, count]) => {
-				const height = (count / maxViews) * 250;
+				const width = maxViews > 0 ? (count / maxViews) * 100 : 0;
 				
-				const bar = document.createElement('div');
-				bar.className = 'bar';
-				bar.style.height = `${height}px`;
+				const barContainer = document.createElement('div');
+				barContainer.className = 'horizontal-bar-container';
 				
 				const label = document.createElement('div');
 				label.className = 'bar-label';
 				label.textContent = mapToFriendlyName(view);
 				
+				const barWrapper = document.createElement('div');
+				barWrapper.className = 'bar-wrapper';
+				
+				const bar = document.createElement('div');
+				bar.className = 'horizontal-bar';
+				bar.style.width = `${width}%`;
+				
 				const value = document.createElement('div');
 				value.className = 'bar-value';
 				value.textContent = count;
 				
-				bar.appendChild(label);
-				bar.appendChild(value);
-				chartContainer.appendChild(bar);
+				barWrapper.appendChild(bar);
+				barWrapper.appendChild(value);
+				barContainer.appendChild(label);
+				barContainer.appendChild(barWrapper);
+				chartContainer.appendChild(barContainer);
 			});
 		}
 
@@ -306,49 +350,62 @@
 			const analytics = getAnalyticsData();
 			const chartContainer = document.getElementById('swiperChart');
 			chartContainer.innerHTML = '';
-						
-			if (analytics.length === 0) {
-				chartContainer.innerHTML = '<div class="no-data">No slider data available</div>';
-				return;
-			}
+			
+			// Define all possible swipers
+			const allSwipers = [
+				'walkthroughSwiper',
+				'demoBusinessSwiper',
+				'demoTechSwiper',
+				'brochureSwiper',
+				'hfsSwiper',
+				'caseStudiesSwiper'
+			];
 						
 			// Count swiper interactions
 			const swiperCounts = {};
+			
+			// Initialize all swipers with zero counts
+			allSwipers.forEach(swiper => {
+				swiperCounts[swiper] = 0;
+			});
+			
 			analytics.forEach(event => {
 				if ((event.type === 'swiper_slide_changed' || event.type === 'swiper_slide_goto' || event.type === 'case_study_slide_changed') && event.swiper_name) {
-					if (!swiperCounts[event.swiper_name]) {
-						swiperCounts[event.swiper_name] = 0;
+					if (swiperCounts.hasOwnProperty(event.swiper_name)) {
+						swiperCounts[event.swiper_name]++;
 					}
-					swiperCounts[event.swiper_name]++;
 				}
 			});
-						
-			if (Object.keys(swiperCounts).length === 0) {
-				chartContainer.innerHTML = '<div class="no-data">No swiper interactions recorded</div>';
-				return;
-			}
 						
 			const maxInteractions = Math.max(...Object.values(swiperCounts));
 			const swipers = Object.entries(swiperCounts).sort((a, b) => b[1] - a[1]);
 						
 			swipers.forEach(([swiperName, count]) => {
-				const height = (count / maxInteractions) * 250;
+				const width = maxInteractions > 0 ? (count / maxInteractions) * 100 : 0;
 				
-				const bar = document.createElement('div');
-				bar.className = 'bar';
-				bar.style.height = `${height}px`;
+				const barContainer = document.createElement('div');
+				barContainer.className = 'horizontal-bar-container';
 				
 				const label = document.createElement('div');
 				label.className = 'bar-label';
 				label.textContent = mapToFriendlyName(swiperName);
 				
+				const barWrapper = document.createElement('div');
+				barWrapper.className = 'bar-wrapper';
+				
+				const bar = document.createElement('div');
+				bar.className = 'horizontal-bar';
+				bar.style.width = `${width}%`;
+				
 				const value = document.createElement('div');
 				value.className = 'bar-value';
 				value.textContent = count;
 				
-				bar.appendChild(label);
-				bar.appendChild(value);
-				chartContainer.appendChild(bar);
+				barWrapper.appendChild(bar);
+				barWrapper.appendChild(value);
+				barContainer.appendChild(label);
+				barContainer.appendChild(barWrapper);
+				chartContainer.appendChild(barContainer);
 			});
 		}
 
@@ -460,7 +517,7 @@
 					// Count event types
 					eventCounts[event.type] = (eventCounts[event.type] || 0) + 1;
 					
-					// Track views
+					// Track views (unique views visited)
 					if (event.view) views.add(event.view);
 					
 					// Track modals
@@ -491,8 +548,8 @@
 					'End Time': formatTimestamp(session.endTime),
 					'Duration': formatDuration(session.duration),
 					'Total Events': sessionEvents.length,
-					'View Changes': eventCounts['view_change'] || 0,
-					'Views Visited': mapArrayToFriendlyNames(Array.from(views)),
+					'Unique Views Visited': mapArrayToFriendlyNames(Array.from(views)),
+					'Total View Changes': eventCounts['view_change'] || 0,
 					'Case Studies Viewed': Array.from(caseStudies).join('; '),
 					'Modal Opens': eventCounts['modal_opened'] || 0,
 					'Modals Opened': mapArrayToFriendlyNames(Array.from(modals)),
@@ -558,6 +615,7 @@
 		document.addEventListener('DOMContentLoaded', function() {
 			refreshDashboard();
 		});
+		
 	</script>
 </body>
 </html>
