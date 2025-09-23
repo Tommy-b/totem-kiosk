@@ -4,6 +4,9 @@ let idleTimer = null;
 let timeoutTimer = null;
 let timeLeft = 30;
 let timeoutTimeline = null;
+let userInteracted = false; // Track if user has interacted (for Android video autoplay)
+let currentPlayingVideo = null; // Track which video is currently playing
+let modalJustOpened = false; // Track if modal was just opened to prevent auto-play
 
 // Session Management
 let currentSession = null;
@@ -535,6 +538,12 @@ function buildModal(modalObj) {
 	modalTrigger.forEach(trigger => {
 		trigger.addEventListener('click', function() {
 			modalTL.play();
+			// Mark that modal just opened to prevent auto-play
+			modalJustOpened = true;
+			setTimeout(() => {
+				modalJustOpened = false;
+			}, 1000); // Reset after 1 second
+			
 			// Track modal opening
 			trackEvent('modal_opened', { 
 				modal_name: modalName,
@@ -576,6 +585,51 @@ Object.defineProperty(HTMLMediaElement.prototype, 'playing', {
 		return !!(this.currentTime > 0 && !this.paused && !this.ended && this.readyState > 2);
 	}
 })
+
+// Helper function to show play button overlay for videos that fail autoplay
+function showVideoPlayButton(video) {
+	const container = video.parentNode;
+	let playOverlay = container.querySelector('.video-play-overlay');
+	
+	if (!playOverlay) {
+		playOverlay = document.createElement('div');
+		playOverlay.className = 'video-play-overlay';
+		playOverlay.innerHTML = `
+			<button class="video-play-btn" style="
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);
+				background: rgba(0,0,0,0.7);
+				border: none;
+				border-radius: 50%;
+				width: 80px;
+				height: 80px;
+				color: white;
+				font-size: 24px;
+				cursor: pointer;
+				z-index: 10;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+			">
+				▶
+			</button>
+		`;
+		container.style.position = 'relative';
+		container.appendChild(playOverlay);
+		
+		// Add click handler to play button
+		playOverlay.querySelector('.video-play-btn').addEventListener('click', function() {
+			userInteracted = true;
+			video.play().catch(error => {
+				console.log('Manual video play failed:', error);
+			});
+		});
+	}
+	
+	playOverlay.style.display = 'block';
+}
 
 // Demo Swipers
 function buildSwiper(swiperObj) {
@@ -640,7 +694,11 @@ function buildSwiper(swiperObj) {
 				});
 				
 				if (videos.length > 0 && !videos[btn.dataset.gotoSlide].playing) {
-					videos[btn.dataset.gotoSlide].play();
+					// Mark user interaction for Android autoplay policy
+					userInteracted = true;
+					videos[btn.dataset.gotoSlide].play().catch(error => {
+						console.log('Video play failed:', error);
+					});
 					// Pause idle timer while video is playing
 					stopIdleTimer();
 					// Track demo video start
@@ -671,14 +729,42 @@ function buildSwiper(swiperObj) {
 			
 			// Add event listeners for play/pause to manage idle timer
 			video.addEventListener('play', function() {
+				// Stop any other currently playing video
+				if (currentPlayingVideo && currentPlayingVideo !== this && currentPlayingVideo.playing) {
+					currentPlayingVideo.pause();
+					currentPlayingVideo.currentTime = 0;
+				}
+				
+				// Set this as the current playing video
+				currentPlayingVideo = this;
+				
 				// Pause idle timer when video starts playing
 				stopIdleTimer();
+				// Hide any play button overlay
+				const playOverlay = this.parentNode.querySelector('.video-play-overlay');
+				if (playOverlay) {
+					playOverlay.style.display = 'none';
+				}
 			});
 			
 			video.addEventListener('pause', function() {
-				// Resume idle timer when video is paused
-				resetIdleTimer();
+				// Clear current playing video if this was it
+				if (currentPlayingVideo === this) {
+					currentPlayingVideo = null;
+				}
+				
+				// Only resume idle timer if this video was actually playing
+				// and we're not in the middle of a slide change
+				if (this.playing || this.currentTime > 0) {
+					// Small delay to avoid conflicts with slide change logic
+					setTimeout(() => {
+						resetIdleTimer();
+					}, 100);
+				}
 			});
+			
+			// Remove automatic canplay handling to prevent all videos from playing at once
+			// Videos will only play when explicitly triggered by user actions
 		});
 
 		swiper.on('slideChange', function(swiper) {
@@ -693,17 +779,28 @@ function buildSwiper(swiperObj) {
 			const previousVideo = videos[swiper.previousIndex];
 			const nextVideo = videos[swiper.activeIndex];
 
-			if (previousVideo.playing) {
+			// Always pause previous video first
+			if (previousVideo) {
 				previousVideo.pause();
 				previousVideo.currentTime = 0;
-				// Resume idle timer when previous video is paused
-				resetIdleTimer();
+				// Clear current playing video if it was the previous one
+				if (currentPlayingVideo === previousVideo) {
+					currentPlayingVideo = null;
+				}
 			}
 
-			if (!nextVideo.playing) {
-				nextVideo.play();
+			// Handle next video - only auto-play if modal wasn't just opened
+			if (nextVideo && !nextVideo.playing && userInteracted && !modalJustOpened) {
+				// Only auto-play if user has interacted (Android autoplay policy)
+				nextVideo.play().catch(error => {
+					console.log('Video autoplay failed:', error);
+					// If autoplay fails, show play button or handle gracefully
+				});
 				// Pause idle timer when next video starts playing
 				stopIdleTimer();
+			} else if (nextVideo && !nextVideo.playing) {
+				// If next video can't autoplay, resume idle timer
+				resetIdleTimer();
 			}
 
 		});
@@ -714,6 +811,8 @@ function buildSwiper(swiperObj) {
 					video.pause();
 					video.currentTime = 0;
 				});
+				// Clear current playing video
+				currentPlayingVideo = null;
 				// Resume idle timer when modal is closed and videos are stopped
 				resetIdleTimer();
 			});
@@ -1112,9 +1211,12 @@ document.addEventListener('DOMContentLoaded', function() {
 		});
 	});
 	
-	// Touch/click events to reset idle timer
+	// Touch/click events to reset idle timer and mark user interaction
 	['touchstart', 'touchend', 'click', 'keydown'].forEach(event => {
-		document.addEventListener(event, resetIdleTimer, { passive: true });
+		document.addEventListener(event, function() {
+			userInteracted = true; // Mark user interaction for Android autoplay
+			resetIdleTimer();
+		}, { passive: true });
 	});
 
 	// Fix for persistent :active states on touch devices
