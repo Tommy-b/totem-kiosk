@@ -1,7 +1,13 @@
 @use "variables" as *;
 
+html,
 body {
-	font-family: 'Futura Next', Roboto, sans-serif;
+	height: 100%;
+	width: 100%;
+}
+
+body {
+	font-family: "Futura Next", Roboto, sans-serif;
 	background: #fff;
 	color: #000;
 	overflow: hidden;
@@ -10,15 +16,30 @@ body {
 	-webkit-user-select: none;
 }
 
-.kiosk-container {
+#app {
+	min-height: 100%;
 	display: flex;
 	flex-direction: column;
-	height: 100dvh;
-	width: 100dvw;
+}
+
+.kiosk-container {
+	width: 100%;
+	/* safer than 100dvw (avoids odd horizontal overflow) */
+	min-height: 100%;
+	/* works because html/body/#app have height */
+	min-height: 100vh;
+	/* classic fallback */
+	min-height: 100svh;
+	/* “small” viewport (iOS/Android safe area) */
+	min-height: 100dvh;
+	/* preferred when supported */
+	display: flex;
+	flex-direction: column;
 }
 
 .main-content {
-	flex: 1;
+	flex: 1 1 auto;
+	min-height: 0;
 	display: flex;
 	align-items: center;
 	justify-content: center;

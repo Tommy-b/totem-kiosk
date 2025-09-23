@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Kiosk Analytics Dashboard</title>
+	<title>Sapient Slingshot Analytics Dashboard</title>
 	<link rel="stylesheet" href="assets/styles/admin.css">
 </head>
 <body>
@@ -418,6 +418,9 @@
 		function populateSessionsTable() {
 			const sessions = getSessionsData();
 			const tableContainer = document.getElementById('sessionsTable');
+			
+			// Clear existing content to prevent duplication
+			tableContainer.innerHTML = '';
 						
 			if (sessions.length === 0) {
 				tableContainer.innerHTML = '<div class="no-data">No session data available</div>';
@@ -452,6 +455,9 @@
 		function populateSubmissionsTable() {
 			const submissions = getFormSubmissions();
 			const tableContainer = document.getElementById('submissionsTable');
+			
+			// Clear existing content to prevent duplication
+			tableContainer.innerHTML = '';
 						
 			if (submissions.length === 0) {
 				tableContainer.innerHTML = '<div class="no-data">No form submissions available</div>';
@@ -493,13 +499,16 @@
 				)
 			].join('\n');
 						
-			const blob = new Blob([csvContent], { type: 'text/csv' });
-			const url = window.URL.createObjectURL(blob);
-			const a = document.createElement('a');
-			a.href = url;
-			a.download = filename;
-			a.click();
-			window.URL.revokeObjectURL(url);
+			if (!downloadTextAndroid(filename, 'text/csv', csvContent)) {
+				// Desktop/browser fallback
+				const blob = new Blob([csvContent], { type: 'text/csv' });
+				const url = URL.createObjectURL(blob);
+				const a = document.createElement('a');
+				a.href = url;
+				a.download = filename;
+				a.click();
+				URL.revokeObjectURL(url);
+			}
 		}
 
 		function exportSessions() {
@@ -591,13 +600,16 @@
 				exportDate: new Date().toISOString()
 			};
 						
-			const blob = new Blob([JSON.stringify(allData, null, 2)], { type: 'application/json' });
-			const url = window.URL.createObjectURL(blob);
-			const a = document.createElement('a');
-			a.href = url;
-			a.download = `kiosk-all-data-${new Date().toISOString().split('T')[0]}.json`;
-			a.click();
-			window.URL.revokeObjectURL(url);
+			const json = JSON.stringify(allData, null, 2);
+			if (!downloadTextAndroid(`kiosk-all-data-${new Date().toISOString().split('T')[0]}.json`, 'application/json', json)) {
+				const blob = new Blob([json], { type: 'application/json' });
+				const url = URL.createObjectURL(blob);
+				const a = document.createElement('a');
+				a.href = url;
+				a.download = `kiosk-all-data-${new Date().toISOString().split('T')[0]}.json`;
+				a.click();
+				URL.revokeObjectURL(url);
+			}
 		}
 
 		function refreshDashboard() {
@@ -621,6 +633,14 @@
 		document.addEventListener('DOMContentLoaded', function() {
 			refreshDashboard();
 		});
+		
+		function downloadTextAndroid(filename, mime, text) {
+			if (window.AndroidExport && typeof AndroidExport.saveText === 'function') {
+				AndroidExport.saveText(filename, mime, text);
+				return true;
+			}
+			return false; // fall back to browser path
+		}
 		
 	</script>
 </body>

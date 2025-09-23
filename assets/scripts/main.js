@@ -641,6 +641,8 @@ function buildSwiper(swiperObj) {
 				
 				if (videos.length > 0 && !videos[btn.dataset.gotoSlide].playing) {
 					videos[btn.dataset.gotoSlide].play();
+					// Pause idle timer while video is playing
+					stopIdleTimer();
 					// Track demo video start
 					trackEvent('demo_video_started', { 
 						swiper_name: swiperObj.name,
@@ -656,6 +658,8 @@ function buildSwiper(swiperObj) {
 		
 		videos.forEach((video, index) => {
 			video.addEventListener('ended', function() {
+				// Resume idle timer when video ends
+				resetIdleTimer();
 				swiper.slideNext();
 				// Track demo video completion
 				trackEvent('demo_video_completed', { 
@@ -663,6 +667,17 @@ function buildSwiper(swiperObj) {
 					slide_index: index,
 					video_src: video.src
 				});
+			});
+			
+			// Add event listeners for play/pause to manage idle timer
+			video.addEventListener('play', function() {
+				// Pause idle timer when video starts playing
+				stopIdleTimer();
+			});
+			
+			video.addEventListener('pause', function() {
+				// Resume idle timer when video is paused
+				resetIdleTimer();
 			});
 		});
 
@@ -681,10 +696,14 @@ function buildSwiper(swiperObj) {
 			if (previousVideo.playing) {
 				previousVideo.pause();
 				previousVideo.currentTime = 0;
+				// Resume idle timer when previous video is paused
+				resetIdleTimer();
 			}
 
 			if (!nextVideo.playing) {
 				nextVideo.play();
+				// Pause idle timer when next video starts playing
+				stopIdleTimer();
 			}
 
 		});
@@ -695,12 +714,14 @@ function buildSwiper(swiperObj) {
 					video.pause();
 					video.currentTime = 0;
 				});
+				// Resume idle timer when modal is closed and videos are stopped
+				resetIdleTimer();
 			});
 		}
 		
 	}
 	
-	if (modalClose) {
+	if (modalClose && videos.length === 0) {
 		modalClose.addEventListener('click', function() {
 			setTimeout(() => {
 				swiper.slideTo(0, 0);
@@ -843,6 +864,55 @@ document.addEventListener('DOMContentLoaded', function() {
 	const hfsSwiperObj = createSwiperConfig(hfsModal);
 	buildSwiper(hfsSwiperObj);
 	
+	// Country Select
+	const countrySelect = document.querySelector('#countrySelect');
+	const slimSelect = new SlimSelect({
+		select: countrySelect,
+		events: {
+			afterChange: (newVal) => {
+				clearSlimSelectError();
+			}
+		}
+	});
+	
+	// Make SlimSelect instance globally accessible for debugging
+	window.slimSelect = slimSelect;
+	
+	// SlimSelect Error Handling Functions
+	function clearSlimSelectError() {
+		const slimSelectContainer = document.querySelector('.ss-main');
+		const parent = slimSelectContainer.parentNode;
+		if (slimSelectContainer) {
+			slimSelectContainer.classList.remove('error');
+			const errorMsg = parent.querySelector('.error-message');
+			parent.classList.remove('error');
+			if (errorMsg) {
+				errorMsg.remove();
+			}
+		}
+	}
+	
+	function showSlimSelectError(message) {
+		const slimSelectContainer = document.querySelector('.ss-main');
+		if (slimSelectContainer) {
+			slimSelectContainer.classList.add('error');
+			
+			// Remove existing error message if any
+			const existingError = slimSelectContainer.parentNode.querySelector('.error-message');
+			if (existingError) {
+				existingError.remove();
+			}
+			
+			// Create new error message
+			const errorMsg = document.createElement('div');
+			const parent = slimSelectContainer.parentNode;
+			errorMsg.className = 'error-message';
+			errorMsg.textContent = message;
+			parent.classList.add('error');
+			parent.insertBefore(errorMsg, slimSelectContainer.nextSibling);
+		}
+	}
+	
 	// Form Validation Functions
 	function validateForm(form) {
 		const errors = [];
@@ -912,6 +982,9 @@ document.addEventListener('DOMContentLoaded', function() {
 				errorMsg.remove();
 			}
 		});
+		
+		// Clear SlimSelect errors
+		clearSlimSelectError();
 	}
 	
 	function createErrorMessage(input, message) {
@@ -927,16 +1000,21 @@ document.addEventListener('DOMContentLoaded', function() {
 			const input = form.querySelector(`[name="${fieldName}"]`);
 			
 			if (input) {
-				// Add error class
-				input.classList.add('error');
-				
-				// Create error message
-				createErrorMessage(input, error.message);
+				// Special handling for Country field (SlimSelect)
+				if (fieldName === 'Country') {
+					showSlimSelectError(error.message);
+				} else {
+					// Add error class
+					input.classList.add('error');
+					
+					// Create error message
+					createErrorMessage(input, error.message);
+				}
 				
 				// Focus on first error field
-				if (errors.indexOf(error) === 0) {
-					input.focus();
-				}
+				//if (errors.indexOf(error) === 0) {
+				//	input.focus();
+				//}
 			}
 		});
 		
@@ -1013,7 +1091,7 @@ document.addEventListener('DOMContentLoaded', function() {
 					}
 				} else if (fieldName === 'Country') {
 					if (value === '') {
-						showFieldError(this, 'Please select a country');
+						showSlimSelectError('Please select a country');
 					}
 				}
 			});
@@ -1040,12 +1118,12 @@ document.addEventListener('DOMContentLoaded', function() {
 	});
 
 	// Fix for persistent :active states on touch devices
-	['touchend', 'touchcancel'].forEach(event => {
-		document.addEventListener(event, function() {
-			// Small delay to ensure the touch event has completed
-			setTimeout(clearActiveStates, 50);
-		}, { passive: true });
-	});
+	//['touchend', 'touchcancel'].forEach(event => {
+	//	document.addEventListener(event, function() {
+	//		// Small delay to ensure the touch event has completed
+	//		setTimeout(clearActiveStates, 50);
+	//	}, { passive: true });
+	//});
 
 	// Admin Panel
 	const adminBtn = document.querySelector('.admin-btn');
@@ -1056,6 +1134,14 @@ document.addEventListener('DOMContentLoaded', function() {
 			window.location.href = 'admin.html';
 		}
 	});
+	
+	// Tell Android when a native <select> opens/closes
+	function _notifyPicker(open) {
+		try { AndroidKiosk?.setPickerOpen?.(open) } catch(e) {}
+	}
+	document.addEventListener('focusin',  e => { if (e.target.tagName === 'SELECT') _notifyPicker(true)  }, true);
+	document.addEventListener('change',   e => { if (e.target.tagName === 'SELECT') _notifyPicker(false) }, true);
+	document.addEventListener('focusout', e => { if (e.target.tagName === 'SELECT') _notifyPicker(false) }, true);
 
 	// Start idle timer
 	resetIdleTimer();
