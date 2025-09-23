@@ -402,6 +402,7 @@ body {
 }
 
 .admin-header {
+  position: relative;
   padding: 4.6296296296vw 4.4444444444vw 2.3148148148vw;
   display: flex;
   flex-direction: column;
@@ -409,6 +410,34 @@ body {
   justify-content: center;
   gap: 1.8518518519vw;
   border-bottom: 0.1851851852vw solid #EEEEEE;
+}
+.admin-header a.back-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  position: absolute;
+  width: 12.962962963vw;
+  top: 50%;
+  left: 4.4444444444vw;
+  color: #000000;
+  font-size: 1.4814814815vw;
+  border: 0.1851851852vw solid;
+  border-radius: 2.2222222222vw;
+  padding: 0.462962963vw 1.8518518519vw 1.8518518519vw;
+  transform: translateY(-40%);
+  transition: all 0.4s ease;
+}
+.admin-header a.back-btn:hover, .admin-header a.back-btn:active {
+  transform: translateY(-40%) scale(0.98);
+}
+.admin-header a.back-btn:not(:focus):not(:hover):not(:active) {
+  transform: translateY(-40%) scale(1);
+}
+.admin-header a.back-btn svg {
+  width: 70%;
+  height: auto;
 }
 .admin-header .logo {
   width: 15.5555555556vw;
@@ -492,17 +521,17 @@ body {
 .metrics-grid .stats-grid .stat-card {
   background: #000000;
   color: #ffffff;
-  padding: 2.962962963vw 2.2222222222vw;
+  padding: 1.4814814815vw 2.2222222222vw;
   border-radius: 2.2222222222vw;
   border: none;
   text-align: center;
 }
 .metrics-grid .stats-grid .stat-card h3 {
-  font-size: 5.7407407407vw;
+  font-size: 4.4444444444vw;
 }
 
 .charts {
-  padding: 4.4444444444vw;
+  padding: 0vw 4.4444444444vw 4.4444444444vw;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 2.2222222222vw;
@@ -515,7 +544,7 @@ body {
   overflow: hidden;
 }
 .charts .chart-title {
-  font-size: 3.3333333333vw;
+  font-size: 2.5925925926vw;
   padding: 1.4814814815vw;
   background: linear-gradient(to bottom, #FE414D, #ad1d27);
   color: #ffffff;
@@ -575,7 +604,7 @@ body {
   overflow: hidden;
 }
 .tables .table-header {
-  font-size: 3.3333333333vw;
+  font-size: 2.5925925926vw;
   font-weight: 600;
   padding: 1.4814814815vw;
   background: linear-gradient(to bottom, #FE414D, #ad1d27);
@@ -651,6 +680,7 @@ body {
   color: #FE414D;
 }
 .session-item .session-duration {
+  font-size: 1.2037037037vw;
   color: #28a745;
   font-weight: 600;
 }
@@ -665,10 +695,10 @@ body {
   justify-content: center;
   background: #ffffff;
   border-top: 1px solid #B4B4B4;
-  height: 16.6666666667vw;
+  height: 14.8148148148vw;
   text-align: center;
   flex-shrink: 0;
-  margin-top: 11.1111111111vw;
+  margin-top: 0vw;
 }
 .footer img {
   width: 17.037vw;

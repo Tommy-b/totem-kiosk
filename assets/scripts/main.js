@@ -32,60 +32,6 @@ let contactForm = null;
 let formContainer = null;
 let formThanks = null;
 
-// Demo Data
-//const demoData = [
-//	{
-//		id: 0,
-//		image: 'assets/images/onboarding-app-demo-thumb.webp',
-//		video: 'assets/video/onboarding-app-demo.webm',
-//		title: 'Developing a mobile onboarding app',
-//		description: 'Discover how Slingshot can be used to develop a secure, intuitive mobile onboarding app for a commercial bank'
-//	},
-//	{
-//		id: 1,
-//		image: 'assets/images/payment-platform-demo-thumb.webp',
-//		video: 'assets/video/payment-platform-demo.webm',
-//		title: 'Building a secure payment platform',
-//		description: 'Explore how Slingshot advances development of a cloud-native payment platform that meets international banking standards'
-//	},
-//	{
-//		id: 2,
-//		image: 'assets/images/cobol-demo-thumb.webp',
-//		video: 'assets/video/cobol-demo.webm',
-//		title: 'Modernizing COBOL to Java for cloud',
-//		description: 'Learn how Slingshot helps organizations migrate legacy systems and modernize outdated code faster and with less risk'
-//	},
-//	{
-//		id: 3,
-//		image: 'assets/images/figma-demo-thumb.webp',
-//		video: 'assets/video/figma-demo.webm',
-//		title: 'Creating a user profile page using Figma to code agents',
-//		description: 'Watch how Slingshot converts Figma designs into production-ready code in seconds—streamlining the path from design to development'
-//	},
-//	{
-//		id: 4,
-//		image: 'assets/images/insurance-app-demo-thumb.webp',
-//		video: 'assets/video/insurance-app-demo.webm',
-//		title: 'Modernizing a legacy insurance application',
-//		description: 'Discover how Slingshot can use AI agents to help modernize outdated legacy code and effectively upgrade your customer experience'
-//	},	
-//	{
-//		id: 5,
-//		image: 'assets/images/banking-app-demo-thumb.webp',
-//		video: 'assets/video/banking-app-demo-business.webm',
-//		title: 'Developing an agentic consumer banking app',
-//		description: 'Explore how Slingshot delivers a modern consumer banking app powered by agentic AI—covering the full SDLC from design to deployment'
-//	},
-//	{
-//		id: 6,
-//		image: 'assets/images/banking-app-demo-thumb.webp',
-//		video: 'assets/video/banking-app-demo-tech.webm',
-//		title: 'Developing an agentic consumer banking app',
-//		description: 'See how Slingshot delivers a modern consumer banking app powered by agentic AI—covering the full SDLC from design to deployment'
-//	}
-//];
-
-
 // View Management
 function showView(viewId) {
 	// Hide all views
@@ -95,9 +41,6 @@ function showView(viewId) {
 
 	// Show target view
 	document.getElementById(viewId).classList.add('active');
-
-	// Update navigation
-	//document.querySelector(`[data-view="${viewId}"]`)?.classList.add('active');
 
 	currentView = viewId;
 	
@@ -534,7 +477,6 @@ function updateTimerDisplay() {
 		timerNumber.textContent = timeLeft;
 	}
 }
-
 
 function resumeSession() {
 	// Kill the timeline before animating exit
@@ -1103,6 +1045,16 @@ document.addEventListener('DOMContentLoaded', function() {
 			// Small delay to ensure the touch event has completed
 			setTimeout(clearActiveStates, 50);
 		}, { passive: true });
+	});
+
+	// Admin Panel
+	const adminBtn = document.querySelector('.admin-btn');
+	let adminClickCount = 0;
+	adminBtn.addEventListener('click', function() {
+		adminClickCount++;
+		if (adminClickCount >= 10) {
+			window.location.href = 'admin.html';
+		}
 	});
 
 	// Start idle timer

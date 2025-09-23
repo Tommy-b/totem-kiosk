@@ -11,6 +11,7 @@ body {
 
 
 .admin-header {
+	position: relative;
 	padding: pxVw(50) pxVw(48) pxVw(25);
 	display: flex;
 	flex-direction: column;
@@ -18,6 +19,39 @@ body {
 	justify-content: center;
 	gap: pxVw(20);
 	border-bottom: pxVw(2) solid $light-gray;
+	
+		a.back-btn {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			text-decoration: none;
+			position: absolute;
+			width: pxVw(140);
+			top: 50%;
+			left: pxVw(48);
+			color: $black;
+			font-size: pxVw(16);
+			border: pxVw(2) solid;
+			border-radius: pxVw(24);
+			padding: pxVw(5) pxVw(20) pxVw(20);
+			transform: translateY(-40%);
+			transition: all $trans3 ease;
+			
+				&:hover, &:active {
+					transform: translateY(-40%) scale(0.98);
+				}
+				
+				&:not(:focus):not(:hover):not(:active) {
+					transform: translateY(-40%) scale(1);
+				}
+				
+				svg {
+					width: 70%;
+					height: auto;
+				}
+			
+		}
 	
 		.logo {
 			width: pxVw(168);
@@ -120,13 +154,13 @@ body {
 				.stat-card {
 					background: $black;
 					color: $white;
-					padding: pxVw(32) pxVw(24);
+					padding: pxVw(16) pxVw(24);
 					border-radius: pxVw(24);
 					border: none;
 					text-align: center;
 					
 						h3 {
-							font-size: pxVw(62);
+							font-size: pxVw(48);
 						}
 					
 				}
@@ -136,7 +170,7 @@ body {
 }
 
 .charts {
-	padding: pxVw(48);
+	padding: pxVw(0) pxVw(48) pxVw(48);
 	display: grid;
 	grid-template-columns: repeat(2, 1fr);
 	gap: pxVw(24);
@@ -150,7 +184,7 @@ body {
 		}
 		
 		.chart-title {
-			font-size: pxVw(36);
+			font-size: pxVw(28);
 			padding: pxVw(16);
 			background: linear-gradient(to bottom, $red, $red-dark);
 			color: $white;
@@ -219,7 +253,7 @@ body {
 		}
 		
 		.table-header {
-			font-size: pxVw(36);
+			font-size: pxVw(28);
 			font-weight: 600;
 			padding: pxVw(16);
 			background: linear-gradient(to bottom, $red, $red-dark);
@@ -313,6 +347,7 @@ body {
 		}
 
 		.session-duration {
+			font-size: pxVw(13);
 			color: #28a745;
 			font-weight: 600;
 		}
@@ -330,10 +365,10 @@ body {
 	justify-content: center;
 	background: $white;
 	border-top: 1px solid $dark-gray;
-	height: pxVw(180);
+	height: pxVw(160);
 	text-align: center;
 	flex-shrink: 0;
-	margin-top: pxVw(120);
+	margin-top: pxVw(0);
 
 	img {
 		width: 17.037vw;

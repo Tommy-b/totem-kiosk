@@ -1,6 +1,7 @@
 @use "variables" as *;
 
 .footer {
+	position: relative;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -13,6 +14,16 @@
 		img {
 			width: 17.037vw;
 			height: auto;
+		}
+	
+		.admin-btn {
+			position: absolute;
+			top: 50%;
+			right:0;
+			width: pxVw(200);
+			height: 100%;
+			opacity: 0;
+			transform: translateY(-50%);
 		}
 	
 }
