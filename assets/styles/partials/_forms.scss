@@ -403,7 +403,7 @@
 
 .ss-content .ss-search input {
 	display: inline-flex;
-	font-size: inherit;
+	font-size: pxVw(24);
 	line-height: inherit;
 	flex: 1 1 auto;
 	width: 100%;
@@ -478,6 +478,7 @@
 	display: block;
 	padding: pxVw(16) pxVw(16) pxVw(16) pxVw(16);
 	white-space: normal;
+	font-size: pxVw(24);
 	color: $black;
 	cursor: pointer;
 	user-select: none

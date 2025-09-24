@@ -62,6 +62,12 @@
 		.modal-container .media {
 			aspect-ratio: 545 / 283;
 			border-bottom: pxVw(1) solid $light-gray;
+			
+				img {
+					width: 100%;
+					height: auto;
+				}
+			
 		}
 	
 }

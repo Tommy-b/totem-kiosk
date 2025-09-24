@@ -4,9 +4,10 @@ let idleTimer = null;
 let timeoutTimer = null;
 let timeLeft = 30;
 let timeoutTimeline = null;
-let userInteracted = false; // Track if user has interacted (for Android video autoplay)
+let userInteracted = false; // Track if user has interacted (for video autoplay)
 let currentPlayingVideo = null; // Track which video is currently playing
 let modalJustOpened = false; // Track if modal was just opened to prevent auto-play
+
 
 // Session Management
 let currentSession = null;
@@ -35,18 +36,62 @@ let contactForm = null;
 let formContainer = null;
 let formThanks = null;
 
+// Initialize view states with GSAP
+function initViews() {
+	// Set all views to be hidden initially
+	document.querySelectorAll('.view').forEach(view => {
+		gsap.set(view, { autoAlpha: 0 });
+	});
+	
+	// Show the welcome view initially
+	const welcomeView = document.getElementById('welcome');
+	if (welcomeView) {
+		welcomeView.classList.add('active');
+		gsap.set(welcomeView, { autoAlpha: 1 });
+	}
+}
+
 // View Management
 function showView(viewId) {
-	// Hide all views
-	document.querySelectorAll('.view').forEach(view => {
-		view.classList.remove('active');
-	});
-
-	// Show target view
-	document.getElementById(viewId).classList.add('active');
+	const targetView = document.getElementById(viewId);
+	const currentActiveView = document.querySelector('.view.active');
+	
+	// If already on the target view, do nothing
+	if (currentActiveView === targetView) {
+		return;
+	}
+	
+	// Create a timeline for smooth crossfade transition
+	const tl = gsap.timeline();
+	
+	// If there's a current active view, fade it out first
+	if (currentActiveView) {
+		// Fade out current view and remove active class
+		tl.to(currentActiveView, {
+			autoAlpha: 0,
+			duration: 0.3,
+			ease: "power2.out",
+			onComplete: () => {
+				currentActiveView.classList.remove('active');
+			}
+		})
+		// Then fade in the new view
+		.to(targetView, {
+			autoAlpha: 1,
+			duration: 0.3,
+			ease: "power2.in",
+			onStart: () => {
+				targetView.classList.add('active');
+			}
+		}, "-=0.1"); // Start slightly before the previous animation ends for smoother transition
+	} else {
+		// No current view, show immediately
+		targetView.classList.add('active');
+		gsap.set(targetView, { autoAlpha: 1 });
+	}
 
 	currentView = viewId;
-	
+
 	// Reset idle timer (will only start if not on welcome screen)
 	resetIdleTimer();
 
@@ -65,7 +110,7 @@ function showView(viewId) {
 function clearActiveStates() {
 	// Clear focus to reset any stuck states
 	document.activeElement?.blur();
-	
+
 	// Force a reflow to clear any stuck :active states
 	document.querySelectorAll('.btn, .card, .path-card, .dashboard-card').forEach(element => {
 		// Reset any inline styles that might be stuck
@@ -73,14 +118,14 @@ function clearActiveStates() {
 		element.style.borderColor = '';
 		element.style.boxShadow = '';
 		element.style.opacity = '';
-		
+
 		// Reset any child elements that might have transforms
 		const childElements = element.querySelectorAll('svg, .row-icon svg');
 		childElements.forEach(child => {
 			child.style.transform = '';
 			child.style.opacity = '';
 		});
-		
+
 		// Trigger a reflow
 		element.offsetHeight;
 	});
@@ -99,18 +144,18 @@ function initQuiz(quizType) {
 	quizState.currentQuestion = 0;
 	quizState.answers = {};
 	quizState.quizType = quizType;
-	
+
 	// Cache the current quiz view
 	currentQuizView = document.getElementById(quizType === 'business' ? 'businessQuiz' : 'technicalQuiz');
-	
+
 	// Get total questions from HTML
 	quizState.totalQuestions = currentQuizView.querySelectorAll('.question').length;
-	
+
 	// Reset quiz to initial state
 	resetQuizView(currentQuizView);
 	updateProgressBar(currentQuizView, 0);
 	updateNavigationButtons(currentQuizView, 0);
-	
+
 	// Track quiz start
 	trackEvent('quiz_started', { quiz_type: quizType });
 }
@@ -125,15 +170,15 @@ function resetQuizView(quizView) {
 	// Hide results, show content
 	const quizContent = quizView.querySelector('.quiz-content');
 	const quizResults = quizView.querySelector('.quiz-results');
-	
+
 	quizContent.classList.add('active');
 	quizResults.classList.remove('active');
-	
+
 	// Reset progress bar opacity
 	const progressBar = quizView.querySelector('.quiz-progress');
 	progressBar.style.transition = 'opacity 0.3s ease-in';
 	progressBar.style.opacity = '1';
-	
+
 	// Reset all questions to inactive
 	const questions = quizView.querySelectorAll('.question');
 	questions.forEach((question, index) => {
@@ -142,7 +187,7 @@ function resetQuizView(quizView) {
 			question.classList.add('active');
 		}
 	});
-	
+
 	// Clear all answer selections
 	const answers = quizView.querySelectorAll('.answer');
 	answers.forEach(answer => {
@@ -153,21 +198,21 @@ function resetQuizView(quizView) {
 function selectAnswer(element) {
 	const questionDiv = element.closest('.question');
 	const questionIndex = parseInt(questionDiv.dataset.question);
-	
+
 	// Remove previous selection for this question
 	questionDiv.querySelectorAll('.answer').forEach(answer => {
 		answer.classList.remove('selected');
 	});
-	
+
 	// Select this answer
 	element.classList.add('selected');
-	
+
 	// Store the answer
 	const weight = parseInt(element.dataset.weight);
 	quizState.answers[questionIndex] = weight;
-	
+
 	// Track answer selection
-	trackEvent('quiz_answer_selected', { 
+	trackEvent('quiz_answer_selected', {
 		quiz_type: quizState.quizType,
 		question: questionIndex + 1,
 		answer_weight: weight
@@ -188,21 +233,21 @@ function nextQuestion() {
 		});
 		return; // Don't proceed without an answer
 	}
-	
+
 	// If this is the last question, show results
 	if (quizState.currentQuestion >= quizState.totalQuestions - 1) {
 		showQuizResults(currentQuizView);
 		return;
 	}
-	
+
 	// Move to next question
 	quizState.currentQuestion++;
 	updateQuestionDisplay(currentQuizView);
 	updateProgressBar(currentQuizView, quizState.currentQuestion);
 	updateNavigationButtons(currentQuizView, quizState.currentQuestion);
-	
+
 	// Track question navigation
-	trackEvent('quiz_question_navigation', { 
+	trackEvent('quiz_question_navigation', {
 		quiz_type: quizState.quizType,
 		question: quizState.currentQuestion + 1,
 		direction: 'next'
@@ -211,15 +256,15 @@ function nextQuestion() {
 
 function previousQuestion() {
 	if (quizState.currentQuestion <= 0) return;
-	
+
 	// Move to previous question
 	quizState.currentQuestion--;
 	updateQuestionDisplay(currentQuizView);
 	updateProgressBar(currentQuizView, quizState.currentQuestion);
 	updateNavigationButtons(currentQuizView, quizState.currentQuestion);
-	
+
 	// Track question navigation
-	trackEvent('quiz_question_navigation', { 
+	trackEvent('quiz_question_navigation', {
 		quiz_type: quizState.quizType,
 		question: quizState.currentQuestion + 1,
 		direction: 'previous'
@@ -248,14 +293,14 @@ function updateNavigationButtons(quizView, currentQuestion) {
 	const prevBtn = quizView.querySelector('.quiz-previous');
 	const nextBtn = quizView.querySelector('.quiz-next');
 	const nextBtnText = nextBtn.querySelector('span');
-	
+
 	// Show/hide previous button
 	if (currentQuestion === 0) {
 		prevBtn.style.display = 'none';
 	} else {
 		prevBtn.style.display = 'flex';
 	}
-	
+
 	// Update next button text for last question
 	if (currentQuestion >= quizState.totalQuestions - 1) {
 		nextBtnText.textContent = 'See Results';
@@ -270,30 +315,30 @@ function showQuizResults(quizView) {
 	for (let i = 0; i < quizState.totalQuestions; i++) {
 		score += quizState.answers[i] || 0;
 	}
-	
+
 	// Set progress bar to 100%
 	updateProgressBar(quizView, quizState.totalQuestions - 1);
-	
+
 	// Fade out progress bar
 	const progressBar = quizView.querySelector('.quiz-progress');
 	progressBar.style.transition = 'opacity 0.5s ease-out';
 	progressBar.style.opacity = '0';
-	
+
 	// Hide quiz content, show results
 	const quizContent = quizView.querySelector('.quiz-content');
 	const quizResults = quizView.querySelector('.quiz-results');
-	
+
 	quizContent.classList.remove('active');
 	quizResults.classList.add('active');
-	
+
 	// Update result text
 	updateResultText(quizView, score);
-	
+
 	// Animate score display
 	animateScoreDisplay(quizView, score);
-	
+
 	// Track quiz completion
-	trackEvent('quiz_completed', { 
+	trackEvent('quiz_completed', {
 		quiz_type: quizState.quizType,
 		score: score,
 		total_questions: quizState.totalQuestions,
@@ -314,13 +359,13 @@ function updateResultText(quizView, score) {
 function animateScoreDisplay(quizView, score) {
 	const scoreNumber = quizView.querySelector('.score .number');
 	const progressCircle = quizView.querySelector('.board-progress');
-	
+
 	// Animate the number
 	let currentNumber = 0;
 	const targetNumber = score;
 	const duration = 1000; // 1 second
 	const increment = targetNumber / (duration / 16); // 60fps
-	
+
 	const numberAnimation = setInterval(() => {
 		currentNumber += increment;
 		if (currentNumber >= targetNumber) {
@@ -329,20 +374,20 @@ function animateScoreDisplay(quizView, score) {
 		}
 		scoreNumber.textContent = Math.floor(currentNumber);
 	}, 16);
-	
+
 	// Animate the progress circle
 	const circumference = 2 * Math.PI * 230; // radius = 230
 	const progress = (score / quizState.totalQuestions) * circumference;
-	
+
 	progressCircle.style.strokeDasharray = `${circumference} ${circumference}`;
 	progressCircle.style.strokeDashoffset = circumference;
-	
+
 	// Animate the circle
 	setTimeout(() => {
 		progressCircle.style.transition = 'stroke-dashoffset 1s ease-in-out';
 		progressCircle.style.strokeDashoffset = circumference - progress;
 	}, 200);
-	
+
 }
 
 // Initialize timeout DOM elements
@@ -362,7 +407,7 @@ function initModalElements() {
 	brochureModal = document.getElementById('brochureOverlay');
 	hfsModal = document.getElementById('hfsOverlay');
 	formModal = document.getElementById('formOverlay');
-	
+
 	// Initialize form elements
 	if (formModal) {
 		contactForm = formModal.querySelector('#contactForm');
@@ -375,21 +420,21 @@ function initModalElements() {
 function resetIdleTimer() {
 	clearTimeout(idleTimer);
 	clearTimeout(timeoutTimer);
-	
+
 	// Initialize elements if not already done
 	if (!timeoutOverlay) {
 		initTimeoutElements();
 	}
-	
+
 	timeoutOverlay?.classList.remove('active');
 	timeLeft = 30;
-	
+
 	// Kill any existing timeline
 	if (timeoutTimeline) {
 		timeoutTimeline.kill();
 		timeoutTimeline = null;
 	}
-	
+
 	// Reset the progress circle to initial state
 	resetProgressCircle();
 
@@ -406,24 +451,24 @@ function resetIdleTimer() {
 function stopIdleTimer() {
 	clearTimeout(idleTimer);
 	clearTimeout(timeoutTimer);
-	
+
 	// Kill any existing timeline
 	if (timeoutTimeline) {
 		timeoutTimeline.kill();
 		timeoutTimeline = null;
 	}
-	
+
 	// Hide timeout overlay if active
 	timeoutOverlay?.classList.remove('active');
 }
 
 function resetProgressCircle() {
 	if (!progressCircle) return;
-	
+
 	// Reset to initial state (no progress)
 	const circumference = 2 * Math.PI * 230; // radius = 230
 	progressCircle.style.strokeDasharray = `${circumference} ${circumference}`;
-	
+
 	// Animate reset with GSAP
 	gsap.set(progressCircle, {
 		strokeDashoffset: circumference
@@ -433,20 +478,20 @@ function resetProgressCircle() {
 function startCountdown() {
 	timeLeft = 30;
 	updateTimerDisplay();
-	
+
 	// Ensure elements are initialized
 	if (!timeoutOverlay) {
 		initTimeoutElements();
 	}
-	
+
 	// Set initial states
 	gsap.set(timeoutCard, { scale: 0.8, opacity: 0 });
 	gsap.set(timerCircle, { scale: 0.9, opacity: 0 });
 	gsap.set(progressCircle, { strokeDashoffset: 2 * Math.PI * 230 });
-	
+
 	// Calculate circumference
 	const circumference = 2 * Math.PI * 230;
-	
+
 	// Create the main countdown timeline
 	timeoutTimeline = gsap.timeline({
 		onComplete: () => {
@@ -456,15 +501,15 @@ function startCountdown() {
 			window.location.reload();
 		}
 	});
-	
+
 	// Animate entrance first
 	timeoutTimeline
 		.to(timeoutCard, { scale: 1, opacity: 1, duration: 0.4, ease: "back.out(1.7)" })
 		.to(timerCircle, { scale: 1, opacity: 1, duration: 0.3, ease: "power2.out" }, "-=0.2")
 		// Start the 30-second countdown animation
-		.to(progressCircle, { 
-			strokeDashoffset: 0, 
-			duration: 30, 
+		.to(progressCircle, {
+			strokeDashoffset: 0,
+			duration: 30,
 			ease: "none",
 			onUpdate: function() {
 				// Update timer display based on progress
@@ -487,7 +532,7 @@ function resumeSession() {
 		timeoutTimeline.kill();
 		timeoutTimeline = null;
 	}
-	
+
 	animateTimeoutExit(() => {
 		timeoutOverlay?.classList.remove('active');
 		resetIdleTimer();
@@ -500,7 +545,7 @@ function restartSession() {
 		timeoutTimeline.kill();
 		timeoutTimeline = null;
 	}
-	
+
 	animateTimeoutExit(() => {
 		timeoutOverlay?.classList.remove('active');
 		showView('welcome');
@@ -511,30 +556,30 @@ function restartSession() {
 function animateTimeoutExit(callback) {
 	// Animate exit
 	gsap.timeline()
-		.to([timeoutCard, timerCircle], { 
-			scale: 0.8, 
-			opacity: 0, 
-			duration: 0.3, 
-			ease: "power2.in" 
+		.to([timeoutCard, timerCircle], {
+			scale: 0.8,
+			opacity: 0,
+			duration: 0.3,
+			ease: "power2.in"
 		})
 		.call(callback, null, "-=0.1");
 }
 
 // Modal Functions
 function buildModal(modalObj) {
-	
+
 	const modal = modalObj;
 	const modalName = modal.attributes['id'].value;
 	const modalClose = modal.querySelector('.modal-close');
 	const modalTrigger = document.querySelectorAll('[data-modal-trigger="' + modalName + '"]');
 	const modalTL = gsap.timeline({paused: true});
-	
+
 	modalTL.set(modal, { opacity: 0, visibility: 'hidden', zIndex: -1000 })
 			 	 .set(modal, { visibility: 'visible', zIndex: 1000 })
 			 	 .to(modal, { opacity: 1, duration: 0.25 });
-				 
+
 	window[modalName] = modalTL;
-	
+
 	modalTrigger.forEach(trigger => {
 		trigger.addEventListener('click', function() {
 			modalTL.play();
@@ -543,15 +588,15 @@ function buildModal(modalObj) {
 			setTimeout(() => {
 				modalJustOpened = false;
 			}, 1000); // Reset after 1 second
-			
+
 			// Track modal opening
-			trackEvent('modal_opened', { 
+			trackEvent('modal_opened', {
 				modal_name: modalName,
 				trigger_element: this.textContent || this.dataset.modalTrigger
 			});
 		});
 	});
-	
+
 	if (modalClose) {
 		modalClose.addEventListener('click', function() {
 			modalTL.reverse();
@@ -559,12 +604,12 @@ function buildModal(modalObj) {
 			trackEvent('modal_closed', { modal_name: modalName });
 		});
 	}
-	
+
 }
 
 function createSwiperConfig(parentId) {
 	const parent = parentId;
-	
+
 	return {
 		name: parent.attributes['data-swiper-name'].value,
 		parent: parent,
@@ -586,11 +631,62 @@ Object.defineProperty(HTMLMediaElement.prototype, 'playing', {
 	}
 })
 
+// Helper function to configure video for playback
+function configureVideo(video) {
+
+	// Add event listeners for debugging
+	video.addEventListener('error', function(e) {
+		console.error('Video error:', video.src, e);
+		console.error('Error details:', {
+			code: video.error?.code,
+			message: video.error?.message,
+			networkState: video.networkState,
+			readyState: video.readyState
+		});
+	});
+}
+
+// Helper function to play video
+function playVideo(video) {
+
+	// Reset video state first
+	video.currentTime = 0;
+	video.load();
+
+	// Wait for video to be ready
+	video.addEventListener('canplay', function onCanPlay() {
+		video.removeEventListener('canplay', onCanPlay);
+
+		// Play video with audio
+		video.muted = false;
+		const playPromise = video.play();
+
+		if (playPromise !== undefined) {
+			playPromise.then(() => {
+				console.log('Video started playing');
+				// Stop idle timer when video actually starts playing
+				stopIdleTimer();
+			}).catch(error => {
+				console.log('Video play failed:', error);
+				// Show play button as fallback
+				showVideoPlayButton(video);
+			});
+		}
+	}, { once: true });
+
+	// Fallback timeout
+	setTimeout(() => {
+		if (video.paused) {
+			showVideoPlayButton(video);
+		}
+	}, 3000);
+}
+
 // Helper function to show play button overlay for videos that fail autoplay
 function showVideoPlayButton(video) {
 	const container = video.parentNode;
 	let playOverlay = container.querySelector('.video-play-overlay');
-	
+
 	if (!playOverlay) {
 		playOverlay = document.createElement('div');
 		playOverlay.className = 'video-play-overlay';
@@ -618,16 +714,50 @@ function showVideoPlayButton(video) {
 		`;
 		container.style.position = 'relative';
 		container.appendChild(playOverlay);
-		
+
 		// Add click handler to play button
 		playOverlay.querySelector('.video-play-btn').addEventListener('click', function() {
 			userInteracted = true;
-			video.play().catch(error => {
-				console.log('Manual video play failed:', error);
-			});
+
+			// Hide the play button immediately
+			playOverlay.style.display = 'none';
+
+			// Configure video before playing
+			configureVideo(video);
+
+			// Reset video state
+			video.currentTime = 0;
+			video.load();
+
+			// Wait for video to be ready, then play
+			video.addEventListener('canplay', function onCanPlay() {
+				video.removeEventListener('canplay', onCanPlay);
+
+				// Play video with audio
+				video.muted = false;
+				const playPromise = video.play();
+
+				if (playPromise !== undefined) {
+					playPromise.then(() => {
+						// Stop idle timer when video actually starts playing
+						stopIdleTimer();
+					}).catch(error => {
+						console.log('Manual video play failed:', error);
+						// Show play button again
+						playOverlay.style.display = 'block';
+					});
+				}
+			}, { once: true });
+
+			// Fallback timeout
+			setTimeout(() => {
+				if (video.paused) {
+					playOverlay.style.display = 'block';
+				}
+			}, 3000);
 		});
 	}
-	
+
 	playOverlay.style.display = 'block';
 }
 
@@ -638,7 +768,7 @@ function buildSwiper(swiperObj) {
 	const pxValue = (viewportWidth * vwValue) / 100;
 	const modalClose = swiperObj.buttons.close;
 	let config = {};
-	
+
 	if (swiperObj.name === 'brochureSwiper' || swiperObj.name === 'hfsSwiper') {
 		config = {
 			slidesPerView: 1.115,
@@ -677,56 +807,68 @@ function buildSwiper(swiperObj) {
 	const swiper = new Swiper(swiperObj.slider, {
 		...config,
 	});
-	
+
 	const videos = swiperObj.parent.querySelectorAll('video') || [];
-	
+
 	if (swiperObj.buttons.goto) {
 		swiperObj.buttons.goto.forEach(btn => {
 			btn.addEventListener('click', function() {
 				const targetSlide = parseInt(btn.dataset.gotoSlide);
 				swiper.slideTo(targetSlide, 0);
-				
+
 				// Track direct slide navigation
 				trackEvent('swiper_slide_goto', {
 					swiper_name: swiperObj.name,
 					target_slide: targetSlide,
 					total_slides: swiper.slides.length
 				});
-				
+
 				if (videos.length > 0 && !videos[btn.dataset.gotoSlide].playing) {
-					// Mark user interaction for Android autoplay policy
+					// Mark user interaction for video autoplay policy
 					userInteracted = true;
-					videos[btn.dataset.gotoSlide].play().catch(error => {
-						console.log('Video play failed:', error);
-					});
+
+					// Get the video for the target slide
+					const video = videos[btn.dataset.gotoSlide];
+
+					// Configure video for playback
+					configureVideo(video);
+
+					// Try to play the video
+					setTimeout(() => {
+						playVideo(video);
+					}, 600);
+
 					// Pause idle timer while video is playing
 					stopIdleTimer();
+
 					// Track demo video start
-					trackEvent('demo_video_started', { 
+					trackEvent('demo_video_started', {
 						swiper_name: swiperObj.name,
 						slide_index: btn.dataset.gotoSlide,
-						video_src: videos[btn.dataset.gotoSlide].src
+						video_src: video.src
 					});
 				}
 			});
 		});
 	}
-	
+
 	if (videos.length > 0) {
-		
+
 		videos.forEach((video, index) => {
+			// Configure video for playback
+			configureVideo(video);
 			video.addEventListener('ended', function() {
 				// Resume idle timer when video ends
 				resetIdleTimer();
 				swiper.slideNext();
 				// Track demo video completion
-				trackEvent('demo_video_completed', { 
+				trackEvent('demo_video_completed', {
 					swiper_name: swiperObj.name,
 					slide_index: index,
 					video_src: video.src
 				});
 			});
-			
+
 			// Add event listeners for play/pause to manage idle timer
 			video.addEventListener('play', function() {
 				// Stop any other currently playing video
@@ -734,10 +876,10 @@ function buildSwiper(swiperObj) {
 					currentPlayingVideo.pause();
 					currentPlayingVideo.currentTime = 0;
 				}
-				
+
 				// Set this as the current playing video
 				currentPlayingVideo = this;
-				
+
 				// Pause idle timer when video starts playing
 				stopIdleTimer();
 				// Hide any play button overlay
@@ -746,23 +888,26 @@ function buildSwiper(swiperObj) {
 					playOverlay.style.display = 'none';
 				}
 			});
-			
+
 			video.addEventListener('pause', function() {
 				// Clear current playing video if this was it
 				if (currentPlayingVideo === this) {
 					currentPlayingVideo = null;
 				}
-				
-				// Only resume idle timer if this video was actually playing
-				// and we're not in the middle of a slide change
-				if (this.playing || this.currentTime > 0) {
+
+				// Only resume idle timer if this video was actually playing and has content
+				// Check if video has been played (currentTime > 0) and is not at the beginning
+				if (this.currentTime > 0 && !this.ended) {
 					// Small delay to avoid conflicts with slide change logic
 					setTimeout(() => {
-						resetIdleTimer();
+						// Double-check that no other video is playing before resuming idle timer
+						if (!currentPlayingVideo) {
+							resetIdleTimer();
+						}
 					}, 100);
 				}
 			});
-			
+
 			// Remove automatic canplay handling to prevent all videos from playing at once
 			// Videos will only play when explicitly triggered by user actions
 		});
@@ -791,20 +936,20 @@ function buildSwiper(swiperObj) {
 
 			// Handle next video - only auto-play if modal wasn't just opened
 			if (nextVideo && !nextVideo.playing && userInteracted && !modalJustOpened) {
-				// Only auto-play if user has interacted (Android autoplay policy)
-				nextVideo.play().catch(error => {
-					console.log('Video autoplay failed:', error);
-					// If autoplay fails, show play button or handle gracefully
-				});
-				// Pause idle timer when next video starts playing
-				stopIdleTimer();
+				// Configure video for playback
+				configureVideo(nextVideo);
+
+				// Try to play the video (stopIdleTimer will be called in playVideo when video actually starts)
+				setTimeout(() => {
+					playVideo(nextVideo);
+				}, 600);
 			} else if (nextVideo && !nextVideo.playing) {
 				// If next video can't autoplay, resume idle timer
 				resetIdleTimer();
 			}
 
 		});
-		
+
 		if (modalClose) {
 			modalClose.addEventListener('click', function() {
 				videos.forEach(video => {
@@ -817,9 +962,9 @@ function buildSwiper(swiperObj) {
 				resetIdleTimer();
 			});
 		}
-		
+
 	}
-	
+
 	if (modalClose && videos.length === 0) {
 		modalClose.addEventListener('click', function() {
 			setTimeout(() => {
@@ -827,40 +972,43 @@ function buildSwiper(swiperObj) {
 			}, 1000);
 		});
 	}
-	
+
 	window[swiperObj.name] = swiper;
-	
+
 	return swiper;
 }
 
 // Event Listeners
 document.addEventListener('DOMContentLoaded', function() {
-		
+
+	// Initialize view states with GSAP
+	initViews();
+
 	// Dashboard card states
 	const dashboardCards = document.querySelectorAll('.dashboard-card');
 	dashboardCards.forEach(card => {
 		card.addEventListener('click', function() {
 			card.classList.toggle('visited');
 			// Track dashboard card interaction
-			trackEvent('dashboard_card_clicked', { 
+			trackEvent('dashboard_card_clicked', {
 				card_title: this.querySelector('h3')?.textContent || 'Unknown',
 				card_type: this.dataset.cardType || 'general'
 			});
 		});
 	});
-	
+
 	// Trivia cards
 	const triviaCards = document.querySelectorAll('.trivia-card .card__wrap');
 	triviaCards.forEach(card => {
 		card.addEventListener('click', function() {
 			card.classList.toggle('is-flipped');
 			// Track trivia card interaction
-			trackEvent('trivia_card_flipped', { 
+			trackEvent('trivia_card_flipped', {
 				card_text: this.querySelector('.card__text')?.textContent || 'Unknown'
 			});
 		});
 	});
-	
+
 	// Main site navigation
 	const viewButtons = document.querySelectorAll('[data-view]');
 	viewButtons.forEach(btn => {
@@ -872,14 +1020,14 @@ document.addEventListener('DOMContentLoaded', function() {
 			});
 		});
 	});
-	
+
 	// Quiz answer selection
 	document.addEventListener('click', function(e) {
 		if (e.target.classList.contains('answer')) {
 			selectAnswer(e.target);
 		}
 	});
-	
+
 	// Quiz navigation buttons
 	document.addEventListener('click', function(e) {
 		if (e.target.classList.contains('quiz-next') || e.target.closest('.quiz-next')) {
@@ -890,10 +1038,10 @@ document.addEventListener('DOMContentLoaded', function() {
 			previousQuestion();
 		}
 	});
-	
+
 	// Initialize modal elements
 	initModalElements();
-	
+
 	// Modals Logic
 	buildModal(walkthroughModal);
 	buildModal(formModal);
@@ -901,21 +1049,21 @@ document.addEventListener('DOMContentLoaded', function() {
 	buildModal(demosTechModal);
 	buildModal(brochureModal);
 	buildModal(hfsModal);
-	
+
 	// Platform Walkthrough Swiper
 	const walkthroughSwiperObj = createSwiperConfig(walkthroughModal);
 	buildSwiper(walkthroughSwiperObj);
-	
-	// Demo Swipers - Helper function to create swiper config	
+
+	// Demo Swipers - Helper function to create swiper config
 	const demoBusinessSwiperObj = createSwiperConfig(demosBusinessModal);
 	const demoTechSwiperObj = createSwiperConfig(demosTechModal);
 	buildSwiper(demoBusinessSwiperObj);
 	buildSwiper(demoTechSwiperObj);
-	
+
 	// Case Studies Swipers
 	const caseStudySwipers = document.querySelectorAll('.case-studies-view');
 	caseStudySwipers.forEach(csItem => {
-		
+
 		const swiper = new Swiper(csItem.querySelector('.swiper'), {
 			effect: "coverflow",
 			centeredSlides: true,
@@ -936,13 +1084,13 @@ document.addEventListener('DOMContentLoaded', function() {
 				prevEl: csItem.querySelector('.swiper-button-prev'),
 			},
 		});
-		
+
 		// Add slide change tracking for case studies
 		swiper.on('slideChange', function(swiper) {
 			const activeSlide = swiper.slides[swiper.activeIndex];
 			const caseStudyTitle = activeSlide?.querySelector('.cs-card .card-header h3')?.textContent || 'Unknown';
 			const caseStudyType = csItem.id === 'caseStudiesBusiness' ? 'Business' : 'Technical';
-			
+
 			trackEvent('case_study_slide_changed', {
 				swiper_name: 'caseStudiesSwiper',
 				from_slide: swiper.previousIndex,
@@ -952,17 +1100,17 @@ document.addEventListener('DOMContentLoaded', function() {
 				case_study_type: caseStudyType
 			});
 		});
-		
+
 	});
-	
+
 	// Brochure Swiper
 	const brochureSwiperObj = createSwiperConfig(brochureModal);
 	buildSwiper(brochureSwiperObj);
-	
+
 	// HFS Swiper
 	const hfsSwiperObj = createSwiperConfig(hfsModal);
 	buildSwiper(hfsSwiperObj);
-	
+
 	// Country Select
 	const countrySelect = document.querySelector('#countrySelect');
 	const slimSelect = new SlimSelect({
@@ -973,10 +1121,10 @@ document.addEventListener('DOMContentLoaded', function() {
 			}
 		}
 	});
-	
+
 	// Make SlimSelect instance globally accessible for debugging
 	window.slimSelect = slimSelect;
-	
+
 	// SlimSelect Error Handling Functions
 	function clearSlimSelectError() {
 		const slimSelectContainer = document.querySelector('.ss-main');
@@ -990,18 +1138,18 @@ document.addEventListener('DOMContentLoaded', function() {
 			}
 		}
 	}
-	
+
 	function showSlimSelectError(message) {
 		const slimSelectContainer = document.querySelector('.ss-main');
 		if (slimSelectContainer) {
 			slimSelectContainer.classList.add('error');
-			
+
 			// Remove existing error message if any
 			const existingError = slimSelectContainer.parentNode.querySelector('.error-message');
 			if (existingError) {
 				existingError.remove();
 			}
-			
+
 			// Create new error message
 			const errorMsg = document.createElement('div');
 			const parent = slimSelectContainer.parentNode;
@@ -1011,16 +1159,16 @@ document.addEventListener('DOMContentLoaded', function() {
 			parent.insertBefore(errorMsg, slimSelectContainer.nextSibling);
 		}
 	}
-	
+
 	// Form Validation Functions
 	function validateForm(form) {
 		const errors = [];
 		const formData = new FormData(form);
 		const data = Object.fromEntries(formData.entries());
-		
+
 		// Clear previous error states
 		clearFormErrors(form);
-		
+
 		// Validate First Name
 		if (!data['First Name'] || data['First Name'].trim().length < 2) {
 			errors.push({
@@ -1028,7 +1176,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				message: 'First name must be at least 2 characters long'
 			});
 		}
-		
+
 		// Validate Last Name
 		if (!data['Last Name'] || data['Last Name'].trim().length < 2) {
 			errors.push({
@@ -1036,7 +1184,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				message: 'Last name must be at least 2 characters long'
 			});
 		}
-		
+
 		// Validate Company
 		if (!data['Company'] || data['Company'].trim().length < 2) {
 			errors.push({
@@ -1044,7 +1192,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				message: 'Company name must be at least 2 characters long'
 			});
 		}
-		
+
 		// Validate Email
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 		if (!data['Work Email'] || !emailRegex.test(data['Work Email'])) {
@@ -1053,7 +1201,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				message: 'Please enter a valid email address'
 			});
 		}
-		
+
 		// Validate Country
 		if (!data['Country'] || data['Country'] === '') {
 			errors.push({
@@ -1061,16 +1209,16 @@ document.addEventListener('DOMContentLoaded', function() {
 				message: 'Please select a country'
 			});
 		}
-		
+
 		// Display errors if any
 		if (errors.length > 0) {
 			displayFormErrors(form, errors);
 			return false;
 		}
-		
+
 		return true;
 	}
-	
+
 	function clearFormErrors(form) {
 		// Remove error classes and messages
 		const inputs = form.querySelectorAll('input, select');
@@ -1081,23 +1229,23 @@ document.addEventListener('DOMContentLoaded', function() {
 				errorMsg.remove();
 			}
 		});
-		
+
 		// Clear SlimSelect errors
 		clearSlimSelectError();
 	}
-	
+
 	function createErrorMessage(input, message) {
 		const errorMsg = document.createElement('div');
 		errorMsg.className = 'error-message';
 		errorMsg.textContent = message;
 		input.parentNode.insertBefore(errorMsg, input.nextSibling);
 	}
-	
+
 	function displayFormErrors(form, errors) {
 		errors.forEach(error => {
 			const fieldName = error.field;
 			const input = form.querySelector(`[name="${fieldName}"]`);
-			
+
 			if (input) {
 				// Special handling for Country field (SlimSelect)
 				if (fieldName === 'Country') {
@@ -1105,20 +1253,20 @@ document.addEventListener('DOMContentLoaded', function() {
 				} else {
 					// Add error class
 					input.classList.add('error');
-					
+
 					// Create error message
 					createErrorMessage(input, error.message);
 				}
-				
+
 				// Focus on first error field
 				//if (errors.indexOf(error) === 0) {
 				//	input.focus();
 				//}
 			}
 		});
-		
+
 		// Track validation errors
-		trackEvent('form_validation_error', { 
+		trackEvent('form_validation_error', {
 			errors: errors.map(e => e.field),
 			error_count: errors.length
 		});
@@ -1128,23 +1276,23 @@ document.addEventListener('DOMContentLoaded', function() {
 	if (contactForm) {
 		contactForm.addEventListener('submit', function(e) {
 			e.preventDefault();
-			
+
 			// Validate form before submission
 			if (!validateForm(this)) {
 				return; // Stop submission if validation fails
 			}
-			
+
 			const formData = new FormData(this);
 			const data = Object.fromEntries(formData.entries());
 			data.timestamp = new Date().toISOString();
-			
+
 			// Save to localStorage
 			let submissions = JSON.parse(localStorage.getItem('kioskSubmissions') || '[]');
 			submissions.push(data);
 			localStorage.setItem('kioskSubmissions', JSON.stringify(submissions));
 
 			// Track successful form submission
-			trackEvent('form_submitted', { 
+			trackEvent('form_submitted', {
 				form_type: 'contact',
 				country: data['Country']
 			});
@@ -1163,7 +1311,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			});
 			this.reset();
 		});
-		
+
 		// Real-time validation on input change
 		const inputs = contactForm.querySelectorAll('input, select');
 		inputs.forEach(input => {
@@ -1174,11 +1322,11 @@ document.addEventListener('DOMContentLoaded', function() {
 				if (errorMsg) {
 					errorMsg.remove();
 				}
-				
+
 				// Validate individual field
 				const fieldName = this.name;
 				const value = this.value.trim();
-				
+
 				if (fieldName === 'First Name' || fieldName === 'Last Name' || fieldName === 'Company') {
 					if (value.length > 0 && value.length < 2) {
 						showFieldError(this, `${fieldName} must be at least 2 characters long`);
@@ -1195,13 +1343,13 @@ document.addEventListener('DOMContentLoaded', function() {
 				}
 			});
 		});
-		
+
 		function showFieldError(input, message) {
 			input.classList.add('error');
 			createErrorMessage(input, message);
 		}
 	}
-	
+
 	// Restart buttons
 	const restartButtons = document.querySelectorAll('[data-restart]');
 	restartButtons.forEach(btn => {
@@ -1210,11 +1358,11 @@ document.addEventListener('DOMContentLoaded', function() {
 			window.location.reload();
 		});
 	});
-	
+
 	// Touch/click events to reset idle timer and mark user interaction
 	['touchstart', 'touchend', 'click', 'keydown'].forEach(event => {
 		document.addEventListener(event, function() {
-			userInteracted = true; // Mark user interaction for Android autoplay
+			userInteracted = true; // Mark user interaction for video autoplay
 			resetIdleTimer();
 		}, { passive: true });
 	});
@@ -1236,7 +1384,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			window.location.href = 'admin.html';
 		}
 	});
-	
+
 	// Tell Android when a native <select> opens/closes
 	function _notifyPicker(open) {
 		try { AndroidKiosk?.setPickerOpen?.(open) } catch(e) {}
@@ -1247,7 +1395,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	// Start idle timer
 	resetIdleTimer();
-	
+
 });
 
 // Session Management Functions

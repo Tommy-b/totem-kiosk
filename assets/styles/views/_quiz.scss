@@ -166,7 +166,7 @@
 								.board-ring, .board-progress {
 									fill: none;
 									stroke: $red;
-									stroke-width: pxVw(20);
+									stroke-width: clamp(13px, 1.8518518519vw, 20px);
 								}
 								
 								.board-progress {
@@ -179,7 +179,7 @@
 								.board-circle {
 									fill: $light-gray;
 									stroke: $light-gray;
-									stroke-width: pxVw(24);
+									stroke-width: clamp(16px, 2.2222222222vw, 24px);
 								}
 								
 								.score {
@@ -383,6 +383,7 @@
 						background: $dark-gray;
 						flex: 0 0 pxVw(20);
 						height: pxVw(20);
+						margin: 0 pxVw(4) !important;
 						opacity: 1;
 
 							&.swiper-pagination-bullet-active {

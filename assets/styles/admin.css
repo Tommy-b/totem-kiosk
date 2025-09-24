@@ -1,4 +1,3 @@
-@charset "UTF-8";
 /* Variables */
 /* Reset and base styles */
 *,
@@ -148,6 +147,8 @@ html,
 body {
   height: 100%;
   width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 body {
@@ -168,21 +169,16 @@ body {
 
 .kiosk-container {
   width: 100%;
-  /* safer than 100dvw (avoids odd horizontal overflow) */
-  min-height: 100%;
-  /* works because html/body/#app have height */
-  min-height: 100vh;
-  /* classic fallback */
-  min-height: 100svh;
-  /* “small” viewport (iOS/Android safe area) */
-  min-height: 100dvh;
-  /* preferred when supported */
+  height: 100%;
+  /* Fallback for older browsers */
+  height: 100dvh;
   display: flex;
   flex-direction: column;
 }
 
 .main-content {
   flex: 1 1 auto;
+  height: 66.6666666667vw;
   min-height: 0;
   display: flex;
   align-items: center;
@@ -207,7 +203,6 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  animation: fadeIn 0.5s ease;
 }
 .view.active * {
   pointer-events: auto;

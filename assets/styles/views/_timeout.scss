@@ -41,14 +41,14 @@
 			
 			.board-ring {
 				stroke: #3a3939;
-				stroke-width: pxVw(20);
+				stroke-width: clamp(13px, 1.8518518519vw, 20px);
 				fill: none;
 			}
 
 			.board-progress {
 				fill: none;
 				stroke: $red;
-				stroke-width: pxVw(20);
+				stroke-width: clamp(13px, 1.8518518519vw, 20px);
 				stroke-linecap: butt;
 			}
 			
